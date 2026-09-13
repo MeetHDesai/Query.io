@@ -1,78 +1,78 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { useAuth } from "@/app/contexts/AuthContext";
-import { AlertCircle } from "lucide-react";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useState } from 'react';
+import { useAuth } from '@/app/contexts/AuthContext';
+import { AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const { login, loginWithGoogle, loginWithGithub } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setIsLoading(true);
-    
+
     try {
       await login(email, password);
       // Redirect is handled inside login function
     } catch (error: any) {
-      let errorMessage = "Invalid email or password. Please try again.";
+      let errorMessage = 'Invalid email or password. Please try again.';
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        errorMessage = "Invalid email or password. Please try again.";
+        errorMessage = 'Invalid email or password. Please try again.';
       } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = "Too many failed login attempts. Please try again later.";
+        errorMessage = 'Too many failed login attempts. Please try again later.';
       } else if (error.code === 'auth/user-disabled') {
-        errorMessage = "This account has been disabled. Please contact support.";
+        errorMessage = 'This account has been disabled. Please contact support.';
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error("Login error:", error);
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    setError("");
+    setError('');
     try {
       await loginWithGoogle();
       // Redirect is handled inside loginWithGoogle function
     } catch (error: any) {
-      let errorMessage = "Failed to sign in with Google. Please try again.";
+      let errorMessage = 'Failed to sign in with Google. Please try again.';
       if (error.code === 'auth/popup-closed-by-user') {
-        errorMessage = "Sign-in popup was closed before completing the sign in process.";
+        errorMessage = 'Sign-in popup was closed before completing the sign in process.';
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error("Google login error:", error);
+      console.error('Google login error:', error);
     }
   };
 
   const handleGithubLogin = async () => {
-    setError("");
+    setError('');
     try {
       await loginWithGithub();
       // Redirect is handled inside loginWithGithub function
     } catch (error: any) {
-      let errorMessage = "Failed to sign in with GitHub. Please try again.";
+      let errorMessage = 'Failed to sign in with GitHub. Please try again.';
       if (error.code === 'auth/popup-closed-by-user') {
-        errorMessage = "Sign-in popup was closed before completing the sign in process.";
+        errorMessage = 'Sign-in popup was closed before completing the sign in process.';
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error("GitHub login error:", error);
+      console.error('GitHub login error:', error);
     }
   };
 
@@ -195,14 +195,14 @@ export default function LoginPage() {
               className="w-full bg-white hover:bg-gray-200 text-black h-12 mt-6"
               disabled={isLoading}
             >
-              {isLoading ? "Logging in..." : "Log in"}
+              {isLoading ? 'Logging in...' : 'Log in'}
             </Button>
           </form>
         </div>
 
         <div className="text-center mt-6">
           <p className="text-[#999] text-sm">
-            Don&apos;t have an account?{" "}
+            Don&apos;t have an account?{' '}
             <Link href="/register" className="text-white hover:underline">
               Sign up
             </Link>
@@ -211,4 +211,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-} 
+}

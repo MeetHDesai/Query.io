@@ -10,7 +10,12 @@ interface UserInputProps {
   isLoading: boolean;
 }
 
-export function UserInput({ inputValue, setInputValue, handleSendMessage, isLoading }: UserInputProps) {
+export function UserInput({
+  inputValue,
+  setInputValue,
+  handleSendMessage,
+  isLoading,
+}: UserInputProps) {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
@@ -29,18 +34,11 @@ export function UserInput({ inputValue, setInputValue, handleSendMessage, isLoad
           className="flex-grow"
           disabled={isLoading}
         />
-        <Button
-          onClick={handleSendMessage}
-          disabled={isLoading || !inputValue.trim()}
-          size="icon"
-        >
-          {isLoading ?
-            <Loader2 className="h-4 w-4 animate-spin" /> :
-            <Send className="h-4 w-4" />
-          }
+        <Button onClick={handleSendMessage} disabled={isLoading || !inputValue.trim()} size="icon">
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           <span className="sr-only">Send</span>
         </Button>
       </div>
     </div>
   );
-} 
+}

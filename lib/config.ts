@@ -1,6 +1,6 @@
 /**
  * Environment configuration with runtime validation
- * 
+ *
  * This file validates that all required environment variables are present
  * before the application starts. It will throw an error on startup if any
  * required variable is missing.
@@ -17,7 +17,8 @@ const requiredVars = [
 ] as const;
 
 // Check that all required environment variables are set
-if (typeof window === 'undefined') { // Only run on server
+if (typeof window === 'undefined') {
+  // Only run on server
   requiredVars.forEach((key) => {
     if (!process.env[key]) {
       throw new Error(`Missing environment variable: ${key}`);
@@ -26,7 +27,9 @@ if (typeof window === 'undefined') { // Only run on server
 
   // Check AES key length specifically after ensuring it exists
   if (process.env.AES_ENCRYPTION_KEY && process.env.AES_ENCRYPTION_KEY.length < 16) {
-    console.warn("[config] Warning: AES_ENCRYPTION_KEY is less than 16 characters. For production, use a strong, unique secret of 32 bytes (or derived to it).");
+    console.warn(
+      '[config] Warning: AES_ENCRYPTION_KEY is less than 16 characters. For production, use a strong, unique secret of 32 bytes (or derived to it).'
+    );
   }
 }
 
@@ -60,8 +63,8 @@ export const CONFIG = {
 export function maskSecret(value: string, visibleChars = 2): string {
   if (!value) return '[empty]';
   if (value.length <= visibleChars * 2) return '*'.repeat(value.length);
-  
+
   const start = value.substring(0, visibleChars);
   const end = value.substring(value.length - visibleChars);
-  return `${start}${'*'.repeat(Math.min(10, value.length - (visibleChars * 2)))}${end}`;
-} 
+  return `${start}${'*'.repeat(Math.min(10, value.length - visibleChars * 2))}${end}`;
+}

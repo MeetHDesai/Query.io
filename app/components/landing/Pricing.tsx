@@ -1,56 +1,63 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
-import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Check } from 'lucide-react';
+import Link from 'next/link';
 
 const pricingPlans = [
   {
-    name: "Free",
-    description: "Perfect for trying out Query.io",
-    price: "$0",
-    billing: "forever",
+    name: 'Free',
+    description: 'Perfect for trying out Query.io',
+    price: '$0',
+    billing: 'forever',
     features: [
-      "Connect 1 database",
-      "100 natural language queries/month",
-      "Basic visualizations",
-      "Community support",
+      'Connect 1 database',
+      '100 natural language queries/month',
+      'Basic visualizations',
+      'Community support',
     ],
-    cta: "Get Started",
+    cta: 'Get Started',
     popular: false,
   },
   {
-    name: "Pro",
-    description: "For individuals and small teams",
-    price: "$29",
-    billing: "per month",
+    name: 'Pro',
+    description: 'For individuals and small teams',
+    price: '$29',
+    billing: 'per month',
     features: [
-      "Connect 5 databases",
-      "1,000 natural language queries/month",
-      "Advanced visualizations",
-      "Dashboard creation",
-      "Export to CSV/Excel",
-      "Email support",
+      'Connect 5 databases',
+      '1,000 natural language queries/month',
+      'Advanced visualizations',
+      'Dashboard creation',
+      'Export to CSV/Excel',
+      'Email support',
     ],
-    cta: "Start Free Trial",
+    cta: 'Start Free Trial',
     popular: true,
   },
   {
-    name: "Enterprise",
-    description: "For organizations with advanced needs",
-    price: "Custom",
-    billing: "contact us",
+    name: 'Enterprise',
+    description: 'For organizations with advanced needs',
+    price: 'Custom',
+    billing: 'contact us',
     features: [
-      "Unlimited database connections",
-      "Unlimited queries",
-      "Custom integrations",
-      "SSO & SAML authentication",
-      "Role-based access control",
-      "Dedicated support & SLA",
-      "On-premise deployment option",
+      'Unlimited database connections',
+      'Unlimited queries',
+      'Custom integrations',
+      'SSO & SAML authentication',
+      'Role-based access control',
+      'Dedicated support & SLA',
+      'On-premise deployment option',
     ],
-    cta: "Contact Sales",
+    cta: 'Contact Sales',
     popular: false,
   },
 ];
@@ -60,16 +67,18 @@ export function Pricing() {
     <section className="w-full py-20 bg-muted">
       <div className="container max-w-7xl">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Simple, Transparent Pricing</h2>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+            Simple, Transparent Pricing
+          </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-            Choose the plan that's right for you
+            Choose the plan that&apos;s right for you
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {pricingPlans.map((plan, index) => (
-            <Card 
-              key={index} 
+            <Card
+              key={index}
               className={`flex flex-col ${plan.popular ? 'border-primary shadow-lg relative' : ''}`}
             >
               {plan.popular && (
@@ -98,19 +107,13 @@ export function Pricing() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button 
+                <Button
                   className={`w-full rounded-full ${plan.popular ? '' : 'bg-secondary hover:bg-secondary-hover'}`}
                   asChild
                 >
-                  {plan.cta === "Get Started" && (
-                    <Link href="/dashboard">{plan.cta}</Link>
-                  )}
-                  {plan.cta === "Start Free Trial" && (
-                    <Link href="/register">{plan.cta}</Link>
-                  )}
-                  {plan.cta === "Contact Sales" && (
-                    <Link href="#contact">{plan.cta}</Link>
-                  )}
+                  {plan.cta === 'Get Started' && <Link href="/dashboard">{plan.cta}</Link>}
+                  {plan.cta === 'Start Free Trial' && <Link href="/register">{plan.cta}</Link>}
+                  {plan.cta === 'Contact Sales' && <Link href="#contact">{plan.cta}</Link>}
                 </Button>
               </CardFooter>
             </Card>
@@ -119,4 +122,4 @@ export function Pricing() {
       </div>
     </section>
   );
-} 
+}

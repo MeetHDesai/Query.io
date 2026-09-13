@@ -7,11 +7,16 @@ import { QueryError } from '@/lib/utils';
 /**
  * Syncs a Firebase user with our database after authentication
  * This ensures we have matching records in Supabase/Prisma
- * 
+ *
  * @param firebaseUid The Firebase UID of the user
  * @returns The synced user record
  */
-export async function syncUserFromFirebase(firebaseUid: string, email: string, firstName: string, lastName: string) {
+export async function syncUserFromFirebase(
+  firebaseUid: string,
+  email: string,
+  firstName: string,
+  lastName: string
+) {
   try {
     // First, check if the user already exists in our database
     const existingUser = await prisma.user.findUnique({
@@ -40,7 +45,7 @@ export async function syncUserFromFirebase(firebaseUid: string, email: string, f
     });
 
     logger.info(`Created new user in database for Firebase UID: ${firebaseUid}`);
-    
+
     return newUser;
   } catch (error) {
     logger.error(`Error syncing user from Firebase: ${error}`);
@@ -51,11 +56,16 @@ export async function syncUserFromFirebase(firebaseUid: string, email: string, f
 /**
  * Gets a user from our database by Firebase UID
  * If the user doesn't exist in our database but exists in Firebase, creates it
- * 
+ *
  * @param firebaseUid The Firebase UID of the user
  * @returns The user record
  */
-export async function getUserByFirebaseId(firebaseUid: string, email: string, firstName: string, lastName: string) {
+export async function getUserByFirebaseId(
+  firebaseUid: string,
+  email: string,
+  firstName: string,
+  lastName: string
+) {
   try {
     // Check if user exists in our database
     const existingUser = await prisma.user.findUnique({
@@ -76,7 +86,7 @@ export async function getUserByFirebaseId(firebaseUid: string, email: string, fi
 
 /**
  * Updates a user's profile information
- * 
+ *
  * @param firebaseUid The Firebase UID of the user
  * @returns The updated user record
  */
@@ -85,11 +95,11 @@ export async function updateUserProfile(firebaseUid: string) {
     const user = await prisma.user.findUnique({
       where: { firebaseUid },
     });
-    
+
     logger.info(`Found user profile for Firebase UID: ${firebaseUid}`);
     return user;
   } catch (error) {
     logger.error(`Error finding user profile: ${error}`);
     throw error;
   }
-} 
+}

@@ -1,26 +1,28 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { X } from "lucide-react";
-import { 
-  ChartContainer, 
-  ChartTooltip, 
-  ChartTooltipContent
-} from "@/components/ui/chart";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  PieChart, 
-  Pie, 
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { X } from 'lucide-react';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  PieChart,
+  Pie,
   Cell,
-  ResponsiveContainer
-} from "recharts";
+  ResponsiveContainer,
+} from 'recharts';
 
 interface QueryChartProps {
   title: string;
@@ -32,21 +34,21 @@ interface QueryChartProps {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
 export function QueryChart({ title, description, data, onDelete }: QueryChartProps) {
-  const [chartType, setChartType] = useState<"bar" | "pie">("bar");
-  
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+
   // Find the keys from the first object in data
   const keys = data && data.length > 0 ? Object.keys(data[0]) : [];
-  const dataKey = keys[0] || "name"; // Default x-axis key
-  const valueKey = keys[1] || "value"; // Default y-axis key
-  
+  const dataKey = keys[0] || 'name'; // Default x-axis key
+  const valueKey = keys[1] || 'value'; // Default y-axis key
+
   // Create chart config for the ChartContainer
   const chartConfig = {
     [valueKey]: {
       label: valueKey,
-      color: "var(--chart-1)"
-    }
+      color: 'var(--chart-1)',
+    },
   };
-  
+
   return (
     <Card className="w-full h-full bg-zinc-950 border-zinc-800 text-zinc-100">
       <CardHeader>
@@ -56,7 +58,7 @@ export function QueryChart({ title, description, data, onDelete }: QueryChartPro
             {description && <CardDescription>{description}</CardDescription>}
           </div>
           <div className="flex items-center gap-2">
-            <Select value={chartType} onValueChange={(value: "bar" | "pie") => setChartType(value)}>
+            <Select value={chartType} onValueChange={(value: 'bar' | 'pie') => setChartType(value)}>
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Chart Type" />
               </SelectTrigger>
@@ -72,7 +74,7 @@ export function QueryChart({ title, description, data, onDelete }: QueryChartPro
         </div>
       </CardHeader>
       <CardContent>
-        {chartType === "bar" ? (
+        {chartType === 'bar' ? (
           <ChartContainer config={chartConfig} className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
@@ -93,7 +95,10 @@ export function QueryChart({ title, description, data, onDelete }: QueryChartPro
             </ResponsiveContainer>
           </ChartContainer>
         ) : (
-          <ChartContainer config={chartConfig} className="h-[300px] rounded-xl shadow-md bg-zinc-900 border border-zinc-800 p-4">
+          <ChartContainer
+            config={chartConfig}
+            className="h-[300px] rounded-xl shadow-md bg-zinc-900 border border-zinc-800 p-4"
+          >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -119,4 +124,4 @@ export function QueryChart({ title, description, data, onDelete }: QueryChartPro
       </CardContent>
     </Card>
   );
-} 
+}

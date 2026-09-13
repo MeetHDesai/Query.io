@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useRouter } from "next/navigation";
-import { 
-  User as FirebaseUser, 
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  User as FirebaseUser,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -12,13 +12,13 @@ import {
   reload as reloadUser,
   GoogleAuthProvider,
   signInWithPopup,
-  GithubAuthProvider
-} from "firebase/auth";
-import { auth } from "@/app/lib/firebase";
-import { setCookie, destroyCookie } from "nookies";
+  GithubAuthProvider,
+} from 'firebase/auth';
+import { auth } from '@/app/lib/firebase';
+import { setCookie, destroyCookie } from 'nookies';
 
 // Name of the cookie where we store the Firebase token
-const FIREBASE_TOKEN_COOKIE = "firebaseToken";
+const FIREBASE_TOKEN_COOKIE = 'firebaseToken';
 
 type User = {
   uid: string;
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         displayName: firebaseUser.displayName,
-        providerData: firebaseUser.providerData
+        providerData: firebaseUser.providerData,
       });
       // Call our server-side API to set the HTTP-only cookie
       const response = await fetch('/api/auth/set-cookie', {
@@ -64,7 +64,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify({ token }),
       });
-      console.log('[storeUserToken] /api/auth/set-cookie response:', response.status, response.statusText);
+      console.log(
+        '[storeUserToken] /api/auth/set-cookie response:',
+        response.status,
+        response.statusText
+      );
       if (!response.ok) {
         const text = await response.text();
         console.error('[storeUserToken] Error response body:', text);
@@ -72,12 +76,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setCookie(null, 'clientToken', token, {
         maxAge: 30 * 24 * 60 * 60, // 30 days
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax"
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
       });
     } catch (error) {
-      console.error("Failed to store user token:", error);
+      console.error('Failed to store user token:', error);
     }
   };
 
@@ -89,7 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email,
-          emailVerified: firebaseUser.emailVerified
+          emailVerified: firebaseUser.emailVerified,
         });
         await storeUserToken(firebaseUser);
         // Sync user with database
@@ -98,29 +102,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const body = {
             firebaseUid: firebaseUser.uid,
             email: firebaseUser.email,
-            firstName: firebaseUser.displayName?.split(' ')[0] || firebaseUser.email?.split('@')[0] || 'Unknown',
-            lastName: firebaseUser.displayName?.split(' ').slice(1).join(' ') || 'User'
+            firstName:
+              firebaseUser.displayName?.split(' ')[0] ||
+              firebaseUser.email?.split('@')[0] ||
+              'Unknown',
+            lastName: firebaseUser.displayName?.split(' ').slice(1).join(' ') || 'User',
           };
           console.log('[onAuthStateChanged] Syncing user with body:', body);
           const syncRes = await fetch('/api/auth/sync-user', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${await firebaseUser.getIdToken()}`
+              Authorization: `Bearer ${await firebaseUser.getIdToken()}`,
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
           });
-          console.log('[onAuthStateChanged] /api/auth/sync-user response:', syncRes.status, syncRes.statusText);
+          console.log(
+            '[onAuthStateChanged] /api/auth/sync-user response:',
+            syncRes.status,
+            syncRes.statusText
+          );
           if (!syncRes.ok) {
             const text = await syncRes.text();
             console.error('[onAuthStateChanged] Error syncing user:', text);
           }
         } catch (error) {
-          console.error("Failed to sync user with database:", error);
+          console.error('Failed to sync user with database:', error);
         }
       } else {
         setUser(null);
-        destroyCookie(null, FIREBASE_TOKEN_COOKIE, { path: "/" });
+        destroyCookie(null, FIREBASE_TOKEN_COOKIE, { path: '/' });
       }
       setIsLoading(false);
     });
@@ -133,19 +144,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentUser = auth.currentUser;
       if (currentUser) {
         await reloadUser(currentUser);
-        
+
         // Update state with fresh user data
         setUser({
           uid: currentUser.uid,
           email: currentUser.email,
-          emailVerified: currentUser.emailVerified
+          emailVerified: currentUser.emailVerified,
         });
-        
+
         // Update token cookie with fresh JWT that includes updated claims
         await storeUserToken(currentUser);
       }
     } catch (error) {
-      console.error("Failed to refresh user data:", error);
+      console.error('Failed to refresh user data:', error);
     }
   };
 
@@ -153,14 +164,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const sendVerificationEmail = async () => {
     const currentUser = auth.currentUser;
     if (!currentUser) {
-      throw new Error("No authenticated user found");
+      throw new Error('No authenticated user found');
     }
 
     try {
       await sendEmailVerification(currentUser);
       return;
     } catch (error) {
-      console.error("Failed to send verification email:", error);
+      console.error('Failed to send verification email:', error);
       throw error;
     }
   };
@@ -171,16 +182,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // Attempt to sign in with email and password
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
+
       // Only redirect if login was successful and we have a user
       if (userCredential && userCredential.user) {
         // Token is handled by onAuthStateChanged
-        router.push("/dashboard");
+        router.push('/dashboard');
       } else {
         throw new Error('Login failed: No user returned');
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error('Login failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -193,16 +204,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
-      
+
       // Only redirect if login was successful and we have a user
       if (userCredential && userCredential.user) {
         // Token is handled by onAuthStateChanged
-        router.push("/dashboard");
+        router.push('/dashboard');
       } else {
         throw new Error('Google login failed: No user returned');
       }
     } catch (error) {
-      console.error("Google login failed:", error);
+      console.error('Google login failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -215,16 +226,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const provider = new GithubAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
-      
+
       // Only redirect if login was successful and we have a user
       if (userCredential && userCredential.user) {
         // Token is handled by onAuthStateChanged
-        router.push("/dashboard");
+        router.push('/dashboard');
       } else {
         throw new Error('GitHub login failed: No user returned');
       }
     } catch (error) {
-      console.error("GitHub login failed:", error);
+      console.error('GitHub login failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -236,7 +247,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // Send verification email immediately after successful registration
       if (userCredential.user) {
         await sendEmailVerification(userCredential.user);
@@ -256,9 +267,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
       // Only redirect after sync attempt
-      router.push("/email-verification");
+      router.push('/email-verification');
     } catch (error) {
-      console.error("Registration failed:", error);
+      console.error('Registration failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -271,9 +282,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await signOut(auth);
       // Token is handled by onAuthStateChanged
-      router.push("/");
+      router.push('/');
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -289,20 +300,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     register,
     logout,
     sendVerificationEmail,
-    refreshUserData
+    refreshUserData,
   };
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}

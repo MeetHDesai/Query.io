@@ -1,16 +1,16 @@
 /**
  * PostgreSQL Schema Introspection Utility
- * 
+ *
  * This module provides functionality to safely introspect the schema of a PostgreSQL database,
  * including tables and their columns. Results are cached to improve performance.
- * 
+ *
  * IMPORTANT: When using this utility:
  * - The connectionUrl must be pre-decrypted before passing to introspect()
  * - Schemas are cached for 1 hour to reduce database load
  * - Each introspection creates a new PrismaClient instance that is properly disconnected after use
  */
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 /**
  * Information about a database column
@@ -48,7 +48,7 @@ const TTL_MS = 60 * 60 * 1000; // 1 hour cache TTL
 
 /**
  * Introspects a PostgreSQL database schema
- * 
+ *
  * @param connectionUrl - The PostgreSQL connection URL (must be decrypted)
  * @param connectionId - Unique identifier for this connection (used as cache key)
  * @returns A promise resolving to the database schema (tables and columns)
@@ -65,9 +65,9 @@ export async function introspect(connectionUrl: string, connectionId: string): P
   const client = new PrismaClient({
     datasources: {
       db: {
-        url: connectionUrl
-      }
-    }
+        url: connectionUrl,
+      },
+    },
   });
 
   try {
@@ -104,7 +104,7 @@ export async function introspect(connectionUrl: string, connectionId: string): P
         // Start a new table
         currentTable = {
           name: row.table_name,
-          columns: []
+          columns: [],
         };
       }
 
@@ -112,7 +112,7 @@ export async function introspect(connectionUrl: string, connectionId: string): P
       currentTable.columns.push({
         name: row.column_name,
         dataType: row.data_type,
-        isNullable: row.is_nullable === 'YES'
+        isNullable: row.is_nullable === 'YES',
       });
     }
 
@@ -124,13 +124,15 @@ export async function introspect(connectionUrl: string, connectionId: string): P
     // Store in cache
     cache.set(connectionId, {
       schema,
-      expires: Date.now() + TTL_MS
+      expires: Date.now() + TTL_MS,
     });
 
     return schema;
   } catch (error) {
     // Add context to the error
-    const contextError = new Error(`Schema introspection failed for connectionId ${connectionId}: ${error instanceof Error ? error.message : String(error)}`);
+    const contextError = new Error(
+      `Schema introspection failed for connectionId ${connectionId}: ${error instanceof Error ? error.message : String(error)}`
+    );
     if (error instanceof Error && error.stack) {
       contextError.stack = error.stack;
     }
@@ -143,7 +145,7 @@ export async function introspect(connectionUrl: string, connectionId: string): P
 
 /**
  * Clears the schema cache for a specific connection or all connections
- * 
+ *
  * @param connectionId - Optional connection ID to clear, if not provided all cache entries are cleared
  */
 export function clearSchemaCache(connectionId?: string): void {
@@ -156,7 +158,7 @@ export function clearSchemaCache(connectionId?: string): void {
 
 /**
  * Gets the number of cached schemas
- * 
+ *
  * @returns The number of schemas currently cached
  */
 export function getCacheSize(): number {
@@ -165,18 +167,20 @@ export function getCacheSize(): number {
 
 /**
  * Generates a formatted schema prompt for AI models
- * 
+ *
  * @param schema - The database schema
  * @returns A string representation of the schema suitable for AI prompts
  */
 export function generateSchemaPrompt(schema: DbSchema): string {
-  const tableDescriptions = schema.map(table => {
-    const columnDefinitions = table.columns.map(
-      col => `    - ${col.name} (${col.dataType}${col.isNullable ? ', nullable' : ''})`
-    ).join('\n');
-    
-    return `Table: ${table.name}\nColumns:\n${columnDefinitions}`;
-  }).join('\n\n');
-  
+  const tableDescriptions = schema
+    .map((table) => {
+      const columnDefinitions = table.columns
+        .map((col) => `    - ${col.name} (${col.dataType}${col.isNullable ? ', nullable' : ''})`)
+        .join('\n');
+
+      return `Table: ${table.name}\nColumns:\n${columnDefinitions}`;
+    })
+    .join('\n\n');
+
   return tableDescriptions;
-} 
+}

@@ -12,8 +12,8 @@ const requiredEnvVars = [
 ];
 
 function validateEnv() {
-  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-  
+  const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
+
   if (missingVars.length > 0) {
     console.error(`Missing required environment variables: ${missingVars.join(', ')}`);
     throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
@@ -33,4 +33,4 @@ export const env = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL as string,
   AES_ENCRYPTION_KEY: process.env.AES_ENCRYPTION_KEY as string,
   NODE_ENV: process.env.NODE_ENV as string,
-}; 
+};

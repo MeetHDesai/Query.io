@@ -10,26 +10,19 @@ if (typeof window !== 'undefined') {
   throw new Error('supabase-admin can only be used on the server-side');
 }
 
-export const supabaseAdmin = createClient(
-  CONFIG.supabaseUrl,
-  CONFIG.supabaseServiceKey
-);
+export const supabaseAdmin = createClient(CONFIG.supabaseUrl, CONFIG.supabaseServiceKey);
 
 // Server-side Supabase service with admin privileges
 export const supabaseAdminService = {
   // User management
   async getUserById(userId: string) {
-    const { data, error } = await supabaseAdmin
-      .from('users')
-      .select('*')
-      .eq('id', userId)
-      .single();
-    
+    const { data, error } = await supabaseAdmin.from('users').select('*').eq('id', userId).single();
+
     if (error) {
       console.error('Error fetching user:', error);
       return null;
     }
-    
+
     return data;
   },
 
@@ -39,12 +32,12 @@ export const supabaseAdminService = {
       .from('connections')
       .select('*')
       .eq('user_id', userId);
-    
+
     if (error) {
       console.error('Error fetching connections:', error);
       return [];
     }
-    
+
     // Map DB results to camelCase
     return (data || []).map((connection: any) => ({
       ...connection,
@@ -61,16 +54,20 @@ export const supabaseAdminService = {
       .select('*')
       .eq('id', connectionId)
       .single();
-    
+
     if (error) {
       console.error('Error fetching connection:', error);
       return null;
     }
-    
+
     return { ...data, encryptedUrl: data.encrypted_url };
   },
 
-  async createConnection(connection: Omit<DatabaseConnectionDB, 'id' | 'createdAt' | 'updatedAt'> | { user_id: string, name: string, encrypted_url: string }) {
+  async createConnection(
+    connection:
+      | Omit<DatabaseConnectionDB, 'id' | 'createdAt' | 'updatedAt'>
+      | { user_id: string; name: string; encrypted_url: string }
+  ) {
     // Map camelCase or snake_case to DB snake_case
     const dbPayload = {
       user_id: (connection as any).user_id || (connection as any).userId,
@@ -107,40 +104,37 @@ export const supabaseAdminService = {
       .from('connections')
       .select('id')
       .eq('user_id', userId);
-    
+
     if (connectionsError || !connections.length) {
       console.error('Error fetching connections:', connectionsError);
       return [];
     }
-    
-    // Get connection IDs 
-    const connectionIds = connections.map(conn => conn.id);
-    
+
+    // Get connection IDs
+    const connectionIds = connections.map((conn) => conn.id);
+
     // Then get all chat threads for these connections
     const { data, error } = await supabaseAdmin
       .from('chat_threads')
       .select('*')
       .in('connection_id', connectionIds);
-    
+
     if (error) {
       console.error('Error fetching chats:', error);
       return [];
     }
-    
+
     return data as ChatSessionDB[];
   },
 
   async createChat(chat: Omit<ChatSessionDB, 'id' | 'created_at' | 'updated_at'>) {
-    const { data, error } = await supabaseAdmin
-      .from('chat_threads')
-      .insert([chat])
-      .select();
-    
+    const { data, error } = await supabaseAdmin.from('chat_threads').insert([chat]).select();
+
     if (error) {
       console.error('Error creating chat:', error);
       throw error;
     }
-    
+
     return data[0] as ChatSessionDB;
   },
 
@@ -151,26 +145,23 @@ export const supabaseAdminService = {
       .select('*')
       .eq('chat_id', chatId)
       .order('timestamp', { ascending: true });
-    
+
     if (error) {
       console.error('Error fetching messages:', error);
       return [];
     }
-    
+
     return data as ChatMessageDB[];
   },
 
   async addMessage(message: Omit<ChatMessageDB, 'id'>) {
-    const { data, error } = await supabaseAdmin
-      .from('chat_messages')
-      .insert([message])
-      .select();
-    
+    const { data, error } = await supabaseAdmin.from('chat_messages').insert([message]).select();
+
     if (error) {
       console.error('Error adding message:', error);
       throw error;
     }
-    
+
     return data[0] as ChatMessageDB;
-  }
-}; 
+  },
+};

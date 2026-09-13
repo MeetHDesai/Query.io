@@ -1,6 +1,6 @@
-import { Metadata } from "next";
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Login - Query.io",
-  description: "Sign in to your Query.io account",
-}; 
+  title: 'Login - Query.io',
+  description: 'Sign in to your Query.io account',
+};

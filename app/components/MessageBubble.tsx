@@ -32,11 +32,13 @@ export function MessageBubble({ message, debug = false }: MessageBubbleProps) {
         </Avatar>
       )}
 
-      <Card className={`p-3 ${
-        message.role === 'user'
-          ? 'bg-primary text-primary-foreground max-w-[85%] md:max-w-[75%]'
-          : 'bg-zinc-900 border-zinc-800 text-white w-full max-w-[90%] md:max-w-[80%] lg:max-w-[75%]'
-        }`}>
+      <Card
+        className={`p-3 ${
+          message.role === 'user'
+            ? 'bg-primary text-primary-foreground max-w-[85%] md:max-w-[75%]'
+            : 'bg-zinc-900 border-zinc-800 text-white w-full max-w-[90%] md:max-w-[80%] lg:max-w-[75%]'
+        }`}
+      >
         {/* Render TEXT messages */}
         {message.contentType === 'text' && (
           <p className="text-sm whitespace-pre-wrap">{message.content as string}</p>
@@ -61,8 +63,8 @@ export function MessageBubble({ message, debug = false }: MessageBubbleProps) {
                 </pre>
               </div>
             )}
-            
-            <QueryResultViewer 
+
+            <QueryResultViewer
               sql={(message.content as QueryResult).sql}
               data={(message.content as QueryResult).data}
               columns={(message.content as QueryResult).columns}
@@ -71,13 +73,15 @@ export function MessageBubble({ message, debug = false }: MessageBubbleProps) {
               chartMeta={{
                 type: (message.content as QueryResult).chartType === 'bar' ? 'bar' : 'line',
                 xKey: (message.content as QueryResult).columns[0],
-                valueKey: (message.content as QueryResult).columns.length > 1 ? 
-                  (message.content as QueryResult).columns[1] : undefined
+                valueKey:
+                  (message.content as QueryResult).columns.length > 1
+                    ? (message.content as QueryResult).columns[1]
+                    : undefined,
               }}
             />
           </>
         )}
-        
+
         {message.timestamp && (
           <p className="text-xs text-muted-foreground mt-3 text-right">
             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -94,4 +98,4 @@ export function MessageBubble({ message, debug = false }: MessageBubbleProps) {
       )}
     </div>
   );
-} 
+}

@@ -1,30 +1,36 @@
-"use client"
+'use client';
 
-import { Switch } from "@/components/ui/switch"
+import { Switch } from '@/components/ui/switch';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Database } from "lucide-react"
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { ArrowLeft, Database } from 'lucide-react';
 
 export default function SettingsPage() {
-  const [isSaving, setIsSaving] = useState(false)
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSaving(true)
+    e.preventDefault();
+    setIsSaving(true);
 
     // Simulate saving
     setTimeout(() => {
-      setIsSaving(false)
-    }, 1000)
-  }
+      setIsSaving(false);
+    }, 1000);
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-black text-white">
@@ -47,8 +53,12 @@ export default function SettingsPage() {
             <span className="text-xl font-bold">QueryIO</span>
           </div>
           <div className="flex items-center gap-4">
-            <Button className="bg-white hover:bg-gray-200 text-black" onClick={handleSubmit} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save Changes"}
+            <Button
+              className="bg-white hover:bg-gray-200 text-black"
+              onClick={handleSubmit}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>
         </div>
@@ -101,11 +111,19 @@ export default function SettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" defaultValue="John" className="bg-[#1a1a1a] border-zinc-700 text-white" />
+                  <Input
+                    id="firstName"
+                    defaultValue="John"
+                    className="bg-[#1a1a1a] border-zinc-700 text-white"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" defaultValue="Doe" className="bg-[#1a1a1a] border-zinc-700 text-white" />
+                  <Input
+                    id="lastName"
+                    defaultValue="Doe"
+                    className="bg-[#1a1a1a] border-zinc-700 text-white"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
@@ -134,11 +152,19 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="companyName">Company Name</Label>
-                  <Input id="companyName" placeholder="Acme Inc." className="bg-[#1a1a1a] border-zinc-700 text-white" />
+                  <Input
+                    id="companyName"
+                    placeholder="Acme Inc."
+                    className="bg-[#1a1a1a] border-zinc-700 text-white"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="jobTitle">Job Title</Label>
-                  <Input id="jobTitle" placeholder="Data Analyst" className="bg-[#1a1a1a] border-zinc-700 text-white" />
+                  <Input
+                    id="jobTitle"
+                    placeholder="Data Analyst"
+                    className="bg-[#1a1a1a] border-zinc-700 text-white"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="industry">Industry</Label>
@@ -217,7 +243,9 @@ export default function SettingsPage() {
             <div className="space-y-4 rounded-lg border border-zinc-800 p-6 bg-[#121212]">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium">Database Connections</h3>
-                <Button className="bg-white hover:bg-gray-200 text-black">Add New Connection</Button>
+                <Button className="bg-white hover:bg-gray-200 text-black">
+                  Add New Connection
+                </Button>
               </div>
 
               <div className="space-y-4 mt-4">
@@ -381,5 +409,5 @@ export default function SettingsPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

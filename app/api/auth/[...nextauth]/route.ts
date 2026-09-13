@@ -1,27 +1,27 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import GoogleProvider from "next-auth/providers/google"
-import { NextAuthOptions } from "next-auth"
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
+import { NextAuthOptions } from 'next-auth';
 
 // Extend the built-in session types
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
       name?: string | null;
       email?: string | null;
       image?: string | null;
-    }
+    };
   }
 }
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         // This is where you would validate the user's credentials against your database
@@ -29,14 +29,14 @@ export const authOptions: NextAuthOptions = {
         if (credentials?.email && credentials?.password) {
           // Return a mock user
           return {
-            id: "1",
-            name: "John Doe",
+            id: '1',
+            name: 'John Doe',
             email: credentials.email,
-            image: "https://i.pravatar.cc/150?u=jdoe"
-          }
+            image: 'https://i.pravatar.cc/150?u=jdoe',
+          };
         }
-        return null
-      }
+        return null;
+      },
     }),
     // You can add more providers like Google, GitHub, etc.
     // GoogleProvider({
@@ -59,11 +59,11 @@ export const authOptions: NextAuthOptions = {
     },
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET || "your-fallback-secret",
-}
+  secret: process.env.NEXTAUTH_SECRET || 'your-fallback-secret',
+};
 
-const handler = NextAuth(authOptions)
+const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST } 
+export { handler as GET, handler as POST };

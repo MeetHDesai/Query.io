@@ -1,6 +1,6 @@
 // utils/queryResult.ts
 
-import { QueryResult } from "../dashboard/components/QueryResult";
+import { QueryResult } from '../dashboard/components/QueryResult';
 
 /**
  * Normalize a possibly partial or malformed QueryResult object into a valid QueryResult.
@@ -19,7 +19,7 @@ export function normalizeQueryResult(obj: any): QueryResult {
     normalized.chartType = obj.chartType as any;
   } else {
     // Default to table if not specified
-    normalized.chartType = "table";
+    normalized.chartType = 'table';
   }
 
   // Normalize description
@@ -36,7 +36,7 @@ export function normalizeQueryResult(obj: any): QueryResult {
   } else if (typeof obj.title === 'string') {
     normalized.description = obj.title;
   } else {
-    normalized.description = "Query results showing the requested data.";
+    normalized.description = 'Query results showing the requested data.';
   }
 
   // Set a meaningful title if present

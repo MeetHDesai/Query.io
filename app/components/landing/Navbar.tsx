@@ -1,10 +1,17 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetFooter, SheetTitle } from "@/components/ui/sheet";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
 export function Navbar1() {
   return (
@@ -32,19 +39,34 @@ export function Navbar1() {
 
         {/* Desktop navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="#features" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+          <Link
+            href="#features"
+            className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+          >
             Features
           </Link>
-          <Link href="#testimonials" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+          <Link
+            href="#testimonials"
+            className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+          >
             Testimonials
           </Link>
-          <Link href="#pricing" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+          <Link
+            href="#pricing"
+            className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+          >
             Pricing
           </Link>
-          <Link href="#about" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+          <Link
+            href="#about"
+            className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+          >
             About
           </Link>
-          <Link href="#contact" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+          <Link
+            href="#contact"
+            className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+          >
             Contact
           </Link>
 

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { cn } from "@/lib/utils";
+import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 interface TestimonialsProps {
   className?: string;
@@ -9,11 +9,16 @@ interface TestimonialsProps {
 
 export function Testimonials({ className }: TestimonialsProps) {
   return (
-    <section id="testimonials" className={cn("w-full py-12 md:py-24 lg:py-32 bg-zinc-900", className)}>
+    <section
+      id="testimonials"
+      className={cn('w-full py-12 md:py-24 lg:py-32 bg-zinc-900', className)}
+    >
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">Testimonials</div>
+            <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">
+              Testimonials
+            </div>
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl text-white">
               Trusted by Data Teams Everywhere
             </h2>
@@ -40,8 +45,9 @@ export function Testimonials({ className }: TestimonialsProps) {
                   ))}
               </div>
               <p className="text-zinc-300">
-                "QueryIO has democratized data access across our organization. Our marketing team can now get
-                insights without waiting for the data team, saving us countless hours each week."
+                &quot;QueryIO has democratized data access across our organization. Our marketing
+                team can now get insights without waiting for the data team, saving us countless
+                hours each week.&quot;
               </p>
             </div>
             <div className="mt-6 flex items-center">
@@ -75,8 +81,9 @@ export function Testimonials({ className }: TestimonialsProps) {
                   ))}
               </div>
               <p className="text-zinc-300">
-                "As a data analyst, I was skeptical about AI-generated SQL. But QueryIO's accuracy is impressive,
-                and it's helped me focus on analysis rather than writing repetitive queries."
+                &quot;As a data analyst, I was skeptical about AI-generated SQL. But QueryIO&apos;s
+                accuracy is impressive, and it&apos;s helped me focus on analysis rather than
+                writing repetitive queries.&quot;
               </p>
             </div>
             <div className="mt-6 flex items-center">
@@ -110,8 +117,9 @@ export function Testimonials({ className }: TestimonialsProps) {
                   ))}
               </div>
               <p className="text-zinc-300">
-                "We integrated QueryIO with our customer support platform, and now our support team can instantly
-                access customer data without learning SQL. Game changer for our response times."
+                &quot;We integrated QueryIO with our customer support platform, and now our support
+                team can instantly access customer data without learning SQL. Game changer for our
+                response times.&quot;
               </p>
             </div>
             <div className="mt-6 flex items-center">
@@ -132,4 +140,4 @@ export function Testimonials({ className }: TestimonialsProps) {
       </div>
     </section>
   );
-} 
+}

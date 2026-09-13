@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Image from "next/image";
-import { Github, Twitter, Linkedin } from "lucide-react";
-import { cn } from "@/lib/utils";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Github, Twitter, Linkedin } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface FooterProps {
   className?: string;
@@ -11,7 +11,10 @@ interface FooterProps {
 
 export function Footer({ className }: FooterProps) {
   return (
-    <footer id="contact" className={cn("w-full border-t border-zinc-800 bg-black py-6 md:py-12", className)}>
+    <footer
+      id="contact"
+      className={cn('w-full border-t border-zinc-800 bg-black py-6 md:py-12', className)}
+    >
       <div className="container px-4 md:px-6 mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
@@ -25,7 +28,9 @@ export function Footer({ className }: FooterProps) {
               />
               <span className="text-xl font-bold text-white">QueryIO</span>
             </div>
-            <p className="text-sm text-zinc-400">Unlock your data with natural language. No SQL required.</p>
+            <p className="text-sm text-zinc-400">
+              Unlock your data with natural language. No SQL required.
+            </p>
             <div className="flex space-x-4">
               <Link href="#" className="text-zinc-500 hover:text-white">
                 <Twitter className="h-5 w-5" />
@@ -123,4 +128,4 @@ export function Footer({ className }: FooterProps) {
       </div>
     </footer>
   );
-} 
+}

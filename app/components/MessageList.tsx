@@ -13,13 +13,20 @@ interface MessageListProps {
   debug?: boolean;
 }
 
-export function MessageList({ messages, isLoading, isLoadingHistory, debug = false }: MessageListProps) {
+export function MessageList({
+  messages,
+  isLoading,
+  isLoadingHistory,
+  debug = false,
+}: MessageListProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   // Function to scroll to bottom
   useEffect(() => {
     if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        '[data-radix-scroll-area-viewport]'
+      );
       if (scrollContainer) {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
       }
@@ -69,4 +76,4 @@ export function MessageList({ messages, isLoading, isLoadingHistory, debug = fal
       </div>
     </ScrollArea>
   );
-} 
+}

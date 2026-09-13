@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/contexts/AuthContext";
-import { Spinner } from "@/components/ui/spinner";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/contexts/AuthContext';
+import { Spinner } from '@/components/ui/spinner';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 
 /**
  * ProtectedRoute component
- * 
+ *
  * Wraps routes that require authentication. If user is not authenticated,
  * redirects to login page. Shows loading state during auth check.
  */
@@ -22,7 +22,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     // Only redirect when we're sure user is not authenticated (loading is complete)
     if (!isLoading && user === null) {
-      router.push("/login");
+      router.push('/login');
     }
   }, [isLoading, user, router]);
 
@@ -37,4 +37,4 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   // Only render children if user is authenticated
   return user ? <>{children}</> : null;
-} 
+}
