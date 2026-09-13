@@ -50,6 +50,21 @@ export function validateSQL(sql: string): ValidationResult {
     };
   }
 
+  // Block SQL comment syntax (-- and /* */), which can be used to comment
+  // out part of a WHERE clause or truncate a query in a way that changes
+  // its meaning. Like the semicolon check above, this is a blanket check
+  // against the whole normalized string rather than a quote-aware parse.
+  if (
+    normalizedSql.includes('--') ||
+    normalizedSql.includes('/*') ||
+    normalizedSql.includes('*/')
+  ) {
+    return {
+      valid: false,
+      reason: 'SQL comments are not allowed',
+    };
+  }
+
   // Block dangerous keywords that might indicate attempts to modify data or access system tables
   const dangerousKeywords = [
     'insert',

@@ -77,6 +77,49 @@ describe('validateSQL', () => {
     });
   });
 
+  describe('SQL comment injection', () => {
+    test('rejects a query with a trailing -- comment', () => {
+      const sql = "SELECT * FROM users WHERE id = 1 -- AND active = true";
+      const result = validateSQL(sql);
+      expect(result).toEqual({
+        valid: false,
+        reason: 'SQL comments are not allowed',
+      });
+    });
+
+    test('rejects a query with a /* */ block comment', () => {
+      const sql = 'SELECT * FROM users /* WHERE active = true */';
+      const result = validateSQL(sql);
+      expect(result).toEqual({
+        valid: false,
+        reason: 'SQL comments are not allowed',
+      });
+    });
+
+    // NOTE: validateSQL does not parse SQL structure (it never has - the
+    // semicolon and keyword checks above are also flat substring/token
+    // checks against the whole normalized string, e.g. a quoted value
+    // containing the standalone word "update" is rejected too, see "still
+    // rejects 'update' when it appears as its own token" above). Consistent
+    // with that existing pattern, "--" inside a quoted string literal is
+    // still rejected as a blanket ban, even though the "--" here is just
+    // data and not an actual SQL comment. This is a known false positive:
+    // a legitimate query filtering on a value that happens to contain "--"
+    // (e.g. a coupon code or free-text note) will be rejected. That's an
+    // intentional conservative trade-off given this validator's flat-string
+    // approach, not an oversight - flag this to the user rather than
+    // silently special-casing quotes, which would require real SQL parsing
+    // to do safely.
+    test('rejects a query with "--" inside a quoted string literal (false positive, by design)', () => {
+      const sql = "SELECT * FROM coupons WHERE code = 'SAVE--10'";
+      const result = validateSQL(sql);
+      expect(result).toEqual({
+        valid: false,
+        reason: 'SQL comments are not allowed',
+      });
+    });
+  });
+
   describe('each dangerous keyword is individually rejected', () => {
     test.each([
       ['insert', "SELECT * FROM logs WHERE action = 'insert record'"],
