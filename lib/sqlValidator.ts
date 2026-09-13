@@ -140,7 +140,7 @@ export function extractSQL(text: string): string | null {
         return parsed.sql.trim();
       }
     }
-  } catch (e) {
+  } catch {
     // Ignore JSON parsing errors and fall back to regex extraction
   }
 

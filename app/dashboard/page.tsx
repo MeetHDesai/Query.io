@@ -554,7 +554,7 @@ export default function Dashboard() {
               return session;
             })
           );
-        } catch (e) {
+        } catch {
           // Not valid JSON yet, just update the streamed text
           setChatSessions((prev) =>
             prev.map((session) => {
@@ -691,7 +691,7 @@ export default function Dashboard() {
       let responseBody;
       try {
         responseBody = await response.clone().json();
-      } catch (e) {
+      } catch {
         responseBody = await response.text();
       }
       logger.info('[handleAddDatabase] /api/connections response body:', responseBody);
