@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String       @id @default(uuid())
+  firebaseUid          String       @unique
+  email                String       @unique
+  firstName            String
+  lastName             String
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  planTier             PlanTier     @default(STARTER)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  connections          Connection[]
+
+  @@map("users")
+}
+
+model Connection {
+  id            String       @id @default(uuid())
+  user_id       String
+  name          String
+  type          DatabaseType
+  encrypted_url String
+  host          String
+  port          Int
+  db_name       String
+  status        String       @default("ACTIVE")
+  created_at    DateTime     @default(now())
+  updated_at    DateTime
+  chatThreads   ChatThread[]
+  users         User         @relation(fields: [user_id], references: [id], map: "connections_userId_fkey")
+
+  @@unique([user_id, name], name: "unique_user_connection_name", map: "connections_userId_name_key")
+  @@map("connections")
+}
+
+model ChatThread {
+  id           String        @id @default(uuid())
+  database_id  String
+  connectionId String
+  title        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  messages     ChatMessage[]
+  connection   Connection    @relation(fields: [connectionId], references: [id])
+
+  @@map("chat_threads")
+}
+
+model ChatMessage {
+  id        String        @id @default(uuid())
+  threadId  String
+  sender    MessageSender
+  content   String
+  sql       String?
+  costUsd   Float?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  thread    ChatThread    @relation(fields: [threadId], references: [id])
+
+  @@map("chat_messages")
+}
+
+enum DatabaseType {
+  POSTGRESQL
+  MYSQL
+  MONGODB
+  SQLSERVER
+}
+
+enum MessageSender {
+  USER
+  ASSISTANT
+}
+
+enum PlanTier {
+  STARTER
+  PRO
+  ENTERPRISE
+}
