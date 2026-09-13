@@ -5,6 +5,10 @@ import { executeQuery } from '@/lib/queryService';
 import { validateSQL } from '@/lib/sqlValidator';
 import { logger } from '@/lib/logger';
 import { QueryError } from '@/lib/utils';
+import { checkRateLimit } from '@/lib/rateLimit';
+
+const RATE_LIMIT = 20;
+const RATE_LIMIT_WINDOW_MS = 60_000;
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -12,6 +16,21 @@ export async function POST(req: Request) {
   // Check if user is authenticated
   if (!session?.user?.id) {
     return new Response('Unauthorized', { status: 401 });
+  }
+
+  const rateLimit = checkRateLimit(`query:${session.user.id}`, RATE_LIMIT, RATE_LIMIT_WINDOW_MS);
+
+  if (!rateLimit.allowed) {
+    logger.warn(`Rate limit exceeded for user ${session.user.id} on /api/query`);
+    return NextResponse.json(
+      {
+        error: `Rate limit exceeded. Maximum ${RATE_LIMIT} requests per minute. Please try again later.`,
+      },
+      {
+        status: 429,
+        headers: { 'Retry-After': Math.ceil(rateLimit.retryAfterMs / 1000).toString() },
+      }
+    );
   }
 
   try {

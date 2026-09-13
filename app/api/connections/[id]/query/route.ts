@@ -6,6 +6,10 @@ import { QueryError } from '@/lib/utils';
 import { prisma } from '@/lib/prisma';
 import openai from '@/lib/openai';
 import { type ChatCompletionMessageParam } from 'openai/resources/chat/completions';
+import { checkRateLimit } from '@/lib/rateLimit';
+
+const RATE_LIMIT = 20;
+const RATE_LIMIT_WINDOW_MS = 60_000;
 
 /**
  * API endpoint for database queries
@@ -29,6 +33,25 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     const firebaseUid = decodedToken.uid;
 
     logger.info(`Authenticated with Firebase UID: ${firebaseUid}`);
+
+    const rateLimit = checkRateLimit(
+      `connections-query:${firebaseUid}`,
+      RATE_LIMIT,
+      RATE_LIMIT_WINDOW_MS
+    );
+
+    if (!rateLimit.allowed) {
+      logger.warn(`Rate limit exceeded for user ${firebaseUid} on /api/connections/[id]/query`);
+      return NextResponse.json(
+        {
+          error: `Rate limit exceeded. Maximum ${RATE_LIMIT} requests per minute. Please try again later.`,
+        },
+        {
+          status: 429,
+          headers: { 'Retry-After': Math.ceil(rateLimit.retryAfterMs / 1000).toString() },
+        }
+      );
+    }
 
     try {
       // Get the connection ID from params - params must be awaited in Next.js App Router
