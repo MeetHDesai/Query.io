@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/app/contexts/AuthContext";
+import { useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 export default function Home() {
   const router = useRouter();
@@ -13,12 +13,12 @@ export default function Home() {
     if (isLoading) return;
 
     // only run this logic when we're still on the root path
-    if (pathname !== "/") return;
+    if (pathname !== '/') return;
 
     if (user) {
-      router.push("/dashboard");
+      router.push('/dashboard');
     } else {
-      router.push("/landing");
+      router.push('/landing');
     }
   }, [user, isLoading, pathname, router]);
 

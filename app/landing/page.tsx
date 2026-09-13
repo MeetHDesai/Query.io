@@ -1,7 +1,17 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { MessageSquare, Database, BarChart2, Shield, ArrowRight, Twitter, Linkedin, Github, Menu } from "lucide-react"
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import {
+  MessageSquare,
+  Database,
+  BarChart2,
+  Shield,
+  ArrowRight,
+  Twitter,
+  Linkedin,
+  Github,
+  Menu,
+} from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -30,19 +40,34 @@ export default function LandingPage() {
 
           {/* Desktop navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="#features" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+            <Link
+              href="#features"
+              className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            >
               Features
             </Link>
-            <Link href="#testimonials" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+            <Link
+              href="#testimonials"
+              className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            >
               Testimonials
             </Link>
-            <Link href="#pricing" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+            <Link
+              href="#pricing"
+              className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            >
               Pricing
             </Link>
-            <Link href="#about" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+            <Link
+              href="#about"
+              className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            >
               About
             </Link>
-            <Link href="#contact" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+            <Link
+              href="#contact"
+              className="text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+            >
               Contact
             </Link>
             <Button
@@ -70,15 +95,20 @@ export default function LandingPage() {
                     Unlock Your Data with <span className="text-white">Natural Language</span>
                   </h1>
                   <p className="max-w-[600px] text-zinc-400 md:text-xl">
-                    QueryIO empowers non-technical users to interact with databases using simple, conversational
-                    language. No SQL knowledge required.
+                    QueryIO empowers non-technical users to interact with databases using simple,
+                    conversational language. No SQL knowledge required.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button size="lg" className="bg-white text-black hover:bg-gray-200" asChild>
                     <Link href="/register">Try QueryIO Free</Link>
                   </Button>
-                  <Button size="lg" variant="outline" className="border-zinc-700 text-white hover:bg-zinc-800" asChild>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-zinc-700 text-white hover:bg-zinc-800"
+                    asChild
+                  >
                     <Link href="#demo">Watch Demo</Link>
                   </Button>
                 </div>
@@ -102,13 +132,15 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6 mx-auto max-w-7xl">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">Features</div>
+                <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">
+                  Features
+                </div>
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl text-white">
                   Powerful Features, Simple Interface
                 </h2>
                 <p className="max-w-[900px] text-zinc-400 md:text-xl">
-                  QueryIO combines advanced AI with an intuitive interface to make database querying accessible to
-                  everyone.
+                  QueryIO combines advanced AI with an intuitive interface to make database querying
+                  accessible to everyone.
                 </p>
               </div>
             </div>
@@ -158,7 +190,9 @@ export default function LandingPage() {
           <div className="container px-4 md:px-6 mx-auto max-w-7xl">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">How It Works</div>
+                <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">
+                  How It Works
+                </div>
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl text-white">
                   From Natural Language to Database Results
                 </h2>
@@ -179,12 +213,14 @@ export default function LandingPage() {
                   <div className="space-y-4">
                     <div className="rounded-lg bg-zinc-800 p-4">
                       <p className="font-medium text-white">
-                        "Show me all customers who spent more than $1000 last month"
+                        &quot;Show me all customers who spent more than $1000 last month&quot;
                       </p>
                     </div>
                     <div className="flex items-center">
                       <div className="h-px flex-1 bg-zinc-700"></div>
-                      <span className="mx-2 text-xs text-zinc-500">QueryIO AI translates to SQL</span>
+                      <span className="mx-2 text-xs text-zinc-500">
+                        QueryIO AI translates to SQL
+                      </span>
                       <div className="h-px flex-1 bg-zinc-700"></div>
                     </div>
                     <div className="rounded-lg bg-zinc-950 p-4 text-zinc-300 font-mono text-sm">
@@ -220,21 +256,37 @@ ORDER BY total_spent DESC;`}
                         </thead>
                         <tbody className="bg-zinc-900 divide-y divide-zinc-800">
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">John Smith</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">john@example.com</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-white">$2,450.00</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                              John Smith
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
+                              john@example.com
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                              $2,450.00
+                            </td>
                           </tr>
                           <tr>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                               Sarah Johnson
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">sarah@example.com</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-white">$1,875.50</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
+                              sarah@example.com
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                              $1,875.50
+                            </td>
                           </tr>
                           <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">Michael Chen</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">michael@example.com</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-white">$1,340.25</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                              Michael Chen
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
+                              michael@example.com
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                              $1,340.25
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -251,12 +303,15 @@ ORDER BY total_spent DESC;`}
           <div className="container px-4 md:px-6 mx-auto max-w-7xl">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">Testimonials</div>
+                <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">
+                  Testimonials
+                </div>
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl text-white">
                   Trusted by Data Teams Everywhere
                 </h2>
                 <p className="max-w-[900px] text-zinc-400 md:text-xl">
-                  See what our customers have to say about how QueryIO has transformed their workflow.
+                  See what our customers have to say about how QueryIO has transformed their
+                  workflow.
                 </p>
               </div>
             </div>
@@ -278,8 +333,9 @@ ORDER BY total_spent DESC;`}
                       ))}
                   </div>
                   <p className="text-zinc-300">
-                    "QueryIO has democratized data access across our organization. Our marketing team can now get
-                    insights without waiting for the data team, saving us countless hours each week."
+                    &quot;QueryIO has democratized data access across our organization. Our
+                    marketing team can now get insights without waiting for the data team, saving us
+                    countless hours each week.&quot;
                   </p>
                 </div>
                 <div className="mt-6 flex items-center">
@@ -313,8 +369,9 @@ ORDER BY total_spent DESC;`}
                       ))}
                   </div>
                   <p className="text-zinc-300">
-                    "As a data analyst, I was skeptical about AI-generated SQL. But QueryIO's accuracy is impressive,
-                    and it's helped me focus on analysis rather than writing repetitive queries."
+                    &quot;As a data analyst, I was skeptical about AI-generated SQL. But
+                    QueryIO&apos;s accuracy is impressive, and it&apos;s helped me focus on analysis
+                    rather than writing repetitive queries.&quot;
                   </p>
                 </div>
                 <div className="mt-6 flex items-center">
@@ -348,8 +405,9 @@ ORDER BY total_spent DESC;`}
                       ))}
                   </div>
                   <p className="text-zinc-300">
-                    "We integrated QueryIO with our customer support platform, and now our support team can instantly
-                    access customer data without learning SQL. Game changer for our response times."
+                    &quot;We integrated QueryIO with our customer support platform, and now our
+                    support team can instantly access customer data without learning SQL. Game
+                    changer for our response times.&quot;
                   </p>
                 </div>
                 <div className="mt-6 flex items-center">
@@ -375,12 +433,15 @@ ORDER BY total_spent DESC;`}
           <div className="container px-4 md:px-6 mx-auto max-w-7xl">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">Pricing</div>
+                <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">
+                  Pricing
+                </div>
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl text-white">
                   Simple, Transparent Pricing
                 </h2>
                 <p className="max-w-[900px] text-zinc-400 md:text-xl">
-                  Choose the plan that's right for your team. All plans include a 14-day free trial.
+                  Choose the plan that&apos;s right for your team. All plans include a 14-day free
+                  trial.
                 </p>
               </div>
             </div>
@@ -659,7 +720,11 @@ ORDER BY total_spent DESC;`}
                     <span className="text-zinc-300">24/7 premium support</span>
                   </li>
                 </ul>
-                <Button className="mt-8 border-white text-white hover:bg-zinc-800" variant="outline" asChild>
+                <Button
+                  className="mt-8 border-white text-white hover:bg-zinc-800"
+                  variant="outline"
+                  asChild
+                >
                   <Link href="#contact">Contact Sales</Link>
                 </Button>
               </div>
@@ -676,7 +741,8 @@ ORDER BY total_spent DESC;`}
                   Start Querying Your Data Today!
                 </h2>
                 <p className="max-w-[600px] text-zinc-300 md:text-xl">
-                  Join thousands of teams already using QueryIO to unlock insights from their data without writing SQL.
+                  Join thousands of teams already using QueryIO to unlock insights from their data
+                  without writing SQL.
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -686,7 +752,12 @@ ORDER BY total_spent DESC;`}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-white border-white hover:bg-zinc-800" asChild>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-white border-white hover:bg-zinc-800"
+                  asChild
+                >
                   <Link href="#demo">Schedule a Demo</Link>
                 </Button>
               </div>
@@ -710,7 +781,9 @@ ORDER BY total_spent DESC;`}
                 />
                 <span className="text-xl font-bold text-white">QueryIO</span>
               </div>
-              <p className="text-sm text-zinc-400">Unlock your data with natural language. No SQL required.</p>
+              <p className="text-sm text-zinc-400">
+                Unlock your data with natural language. No SQL required.
+              </p>
               <div className="flex space-x-4">
                 <Link href="#" className="text-zinc-500 hover:text-white">
                   <Twitter className="h-5 w-5" />
@@ -808,5 +881,5 @@ ORDER BY total_spent DESC;`}
         </div>
       </footer>
     </div>
-  )
+  );
 }

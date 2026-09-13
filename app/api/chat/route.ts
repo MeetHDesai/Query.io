@@ -10,21 +10,21 @@ import { QueryError, safelyParseJson } from '@/lib/utils';
 // --- Interfaces ---
 
 interface PromptMessage {
-  role: "system" | "user" | "assistant";
+  role: 'system' | 'user' | 'assistant';
   content: string;
 }
 
 // Expected JSON structure from the AI
 interface AiResponseJson {
   sql: string;
-  chartType: "line" | "bar" | "pie" | "area" | "radar" | "radial" | "table";
+  chartType: 'line' | 'bar' | 'pie' | 'area' | 'radar' | 'radial' | 'table';
   title: string;
   description: string; // This is the explanation for the chart/table
 }
 
 // Final response structure for the frontend
 interface QueryResult {
-  chartType?: "line" | "bar" | "pie" | "area" | "radar" | "radial" | "table";
+  chartType?: 'line' | 'bar' | 'pie' | 'area' | 'radar' | 'radial' | 'table';
   data: any[];
   columns: string[];
   sql: string;
@@ -40,7 +40,7 @@ async function buildAiPrompt(query: string, connectionId: string): Promise<Promp
     const schema = await getDatabaseSchema(connectionId);
 
     const systemPrompt: PromptMessage = {
-      role: "system",
+      role: 'system',
       content: `You are QueryIO, an expert PostgreSQL database and visualization assistant. Your primary goal is to convert natural language queries into SQL, determine the best visualization for the results, generate a title and a brief explanation, and return a structured JSON response.
 
 Available Chart Types: area, bar, line, pie, radar, radial, table
@@ -87,12 +87,12 @@ Example JSON Response Format (using 'line'):
 `,
     };
 
-    const userMessage: PromptMessage = { role: "user", content: query };
+    const userMessage: PromptMessage = { role: 'user', content: query };
     return [systemPrompt, userMessage];
   } catch (error) {
     logger.error('Error building AI prompt:', error);
     // Re-throw to be caught by the main handler, ensuring consistent error response
-    throw new QueryError("Failed to prepare AI request due to schema issues.", 500);
+    throw new QueryError('Failed to prepare AI request due to schema issues.', 500);
   }
 }
 
@@ -102,29 +102,39 @@ export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     // Use NextResponse for standard responses
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   let requestBody;
   try {
-      requestBody = await req.json();
+    requestBody = await req.json();
   } catch (error) {
-      logger.error("Failed to parse request body:", error);
-      return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+    logger.error('Failed to parse request body:', error);
+    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
   const { messages, connectionId, chatId } = requestBody;
 
   // --- Basic Input Validation ---
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return NextResponse.json({ error: "Missing or invalid 'messages' array." }, { status: 400 });
+    return NextResponse.json({ error: "Missing or invalid 'messages' array." }, { status: 400 });
   }
   if (!connectionId) {
-    return NextResponse.json({ error: "Database connection ID ('connectionId') is required." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Database connection ID ('connectionId') is required." },
+      { status: 400 }
+    );
   }
   const lastMessage = messages[messages.length - 1];
-  if (!lastMessage || typeof lastMessage.content !== 'string' || lastMessage.content.trim() === '') {
-      return NextResponse.json({ error: "Invalid or empty user query in the last message." }, { status: 400 });
+  if (
+    !lastMessage ||
+    typeof lastMessage.content !== 'string' ||
+    lastMessage.content.trim() === ''
+  ) {
+    return NextResponse.json(
+      { error: 'Invalid or empty user query in the last message.' },
+      { status: 400 }
+    );
   }
   const query = lastMessage.content.trim();
 
@@ -156,44 +166,59 @@ export async function POST(req: Request) {
     // Use a NON-streaming completion call, requesting JSON format
     // Adjust model and options as needed
     const aiJsonResponseString = await getCompletion(promptMessages, {
-        // model: "gpt-4-turbo-preview", // Or your preferred model capable of JSON mode
-        response_format: { type: "json_object" },
-        temperature: 0.1, // Lower temperature for more deterministic JSON/SQL
+      // model: "gpt-4-turbo-preview", // Or your preferred model capable of JSON mode
+      response_format: { type: 'json_object' },
+      temperature: 0.1, // Lower temperature for more deterministic JSON/SQL
     });
 
     aiResponseJson = safelyParseJson<AiResponseJson>(aiJsonResponseString);
 
-    if (!aiResponseJson?.sql || !aiResponseJson?.chartType || !aiResponseJson?.title || typeof aiResponseJson?.description !== 'string') { // Check description exists
-      logger.error("AI response missing required fields or invalid JSON.", { response: aiJsonResponseString });
-      throw new QueryError("AI response was incomplete or incorrectly formatted. Please try rephrasing.", 502); // Bad Gateway from AI
+    if (
+      !aiResponseJson?.sql ||
+      !aiResponseJson?.chartType ||
+      !aiResponseJson?.title ||
+      typeof aiResponseJson?.description !== 'string'
+    ) {
+      // Check description exists
+      logger.error('AI response missing required fields or invalid JSON.', {
+        response: aiJsonResponseString,
+      });
+      throw new QueryError(
+        'AI response was incomplete or incorrectly formatted. Please try rephrasing.',
+        502
+      ); // Bad Gateway from AI
     }
 
     generatedSql = aiResponseJson.sql.trim();
 
     // **CRITICAL VALIDATION:** Ensure it's a SELECT statement (case-insensitive check, ignoring leading comments/whitespace)
     const upperSql = generatedSql.toUpperCase();
-    if (!upperSql.startsWith('SELECT') && !upperSql.startsWith('/*') && !upperSql.startsWith('--')) {
-         // Basic check allowing leading comments. More robust parsing could be used if needed.
-         let checkSql = generatedSql;
-         if(checkSql.startsWith('/*')) {
-            const commentEndIndex = checkSql.indexOf('*/');
-            if (commentEndIndex !== -1) {
-                checkSql = checkSql.substring(commentEndIndex + 2).trim();
-            }
-         } else if (checkSql.startsWith('--')) {
-             const newlineIndex = checkSql.indexOf('\n');
-             if (newlineIndex !== -1) {
-                 checkSql = checkSql.substring(newlineIndex + 1).trim();
-             }
-         }
-         if(!checkSql.toUpperCase().startsWith('SELECT')) {
-            logger.warn(`AI generated non-SELECT statement prevented: ${generatedSql}`);
-            throw new QueryError("Sorry, I can only generate read-only SELECT statements.", 400); // Bad Request (invalid operation)
-         }
+    if (
+      !upperSql.startsWith('SELECT') &&
+      !upperSql.startsWith('/*') &&
+      !upperSql.startsWith('--')
+    ) {
+      // Basic check allowing leading comments. More robust parsing could be used if needed.
+      let checkSql = generatedSql;
+      if (checkSql.startsWith('/*')) {
+        const commentEndIndex = checkSql.indexOf('*/');
+        if (commentEndIndex !== -1) {
+          checkSql = checkSql.substring(commentEndIndex + 2).trim();
+        }
+      } else if (checkSql.startsWith('--')) {
+        const newlineIndex = checkSql.indexOf('\n');
+        if (newlineIndex !== -1) {
+          checkSql = checkSql.substring(newlineIndex + 1).trim();
+        }
+      }
+      if (!checkSql.toUpperCase().startsWith('SELECT')) {
+        logger.warn(`AI generated non-SELECT statement prevented: ${generatedSql}`);
+        throw new QueryError('Sorry, I can only generate read-only SELECT statements.', 400); // Bad Request (invalid operation)
+      }
     } else if (!upperSql.startsWith('SELECT')) {
-         // Handle cases where it starts with comments but isn't caught above or simple SELECT check fails
-          logger.warn(`AI generated non-SELECT statement prevented: ${generatedSql}`);
-          throw new QueryError("Sorry, I can only generate read-only SELECT statements.", 400);
+      // Handle cases where it starts with comments but isn't caught above or simple SELECT check fails
+      logger.warn(`AI generated non-SELECT statement prevented: ${generatedSql}`);
+      throw new QueryError('Sorry, I can only generate read-only SELECT statements.', 400);
     }
 
     // 2. Execute the Generated SQL
@@ -212,50 +237,63 @@ export async function POST(req: Request) {
 
     // Optional: Save successful assistant message (QueryResult)
     if (chatId) {
-         try {
-             await supabaseService.addMessage({
-  chat_id: chatId,
-  content: JSON.stringify(finalResult), // Backward compatibility
-  sender: 'assistant',
-  message_type: 'query_result',
-  results: finalResult, // Store the structured result for robust parsing
-  timestamp: new Date().toISOString(),
-});
-         } catch (error) {
-             logger.error(`Error saving assistant message for chatId ${chatId}:`, error);
-         }
+      try {
+        await supabaseService.addMessage({
+          chat_id: chatId,
+          content: JSON.stringify(finalResult), // Backward compatibility
+          sender: 'assistant',
+          message_type: 'query_result',
+          results: finalResult, // Store the structured result for robust parsing
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        logger.error(`Error saving assistant message for chatId ${chatId}:`, error);
+      }
     }
 
     return NextResponse.json(finalResult);
-
   } catch (error: any) {
-    logger.error("Error during AI query or DB execution:", { query, connectionId, chatId, error: error.message, stack: error.stack });
+    logger.error('Error during AI query or DB execution:', {
+      query,
+      connectionId,
+      chatId,
+      error: error.message,
+      stack: error.stack,
+    });
 
     let statusCode = 500;
-    let errorMessage = "An unexpected error occurred. Please try again later.";
+    let errorMessage = 'An unexpected error occurred. Please try again later.';
 
     if (error instanceof QueryError) {
       statusCode = error.statusCode;
       errorMessage = error.message;
-    } else if (error.message?.includes('database') || error.message?.includes('connection') || error.message?.includes('query')) {
-        // Catch specific DB-related errors if not QueryError
-        errorMessage = `Database error: ${error.message}`; // Provide more specific DB error if possible
-        statusCode = 503; // Service Unavailable (DB)
-    } else if (error.message?.includes('AI') || error.message?.includes('OpenAI') || error.message?.includes('completion')) {
-        // Catch generic AI errors if not QueryError
-        errorMessage = "There was a problem communicating with the AI service.";
-        statusCode = 502; // Bad Gateway (AI)
+    } else if (
+      error.message?.includes('database') ||
+      error.message?.includes('connection') ||
+      error.message?.includes('query')
+    ) {
+      // Catch specific DB-related errors if not QueryError
+      errorMessage = `Database error: ${error.message}`; // Provide more specific DB error if possible
+      statusCode = 503; // Service Unavailable (DB)
+    } else if (
+      error.message?.includes('AI') ||
+      error.message?.includes('OpenAI') ||
+      error.message?.includes('completion')
+    ) {
+      // Catch generic AI errors if not QueryError
+      errorMessage = 'There was a problem communicating with the AI service.';
+      statusCode = 502; // Bad Gateway (AI)
     }
 
     // Construct consistent error response for the frontend
     errorResult = {
-        error: errorMessage,
-        sql: generatedSql || "Failed before SQL generation", // Include SQL if it was generated
-        title: aiResponseJson?.title || "Error Occurred",
-        description: aiResponseJson?.description, // Include description if available
-        chartType: aiResponseJson?.chartType || "table", // Default chart type on error
-        data: [],
-        columns: [],
+      error: errorMessage,
+      sql: generatedSql || 'Failed before SQL generation', // Include SQL if it was generated
+      title: aiResponseJson?.title || 'Error Occurred',
+      description: aiResponseJson?.description, // Include description if available
+      chartType: aiResponseJson?.chartType || 'table', // Default chart type on error
+      data: [],
+      columns: [],
     };
 
     return NextResponse.json(errorResult, { status: statusCode });

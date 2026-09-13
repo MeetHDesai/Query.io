@@ -29,7 +29,7 @@ export async function streamCompletion(messages: any[]) {
   // Cast the stream to the expected type to avoid TypeScript errors
   // This is necessary due to differences in type definitions between OpenAI SDK versions
   const stream = OpenAIStream(response as any);
-  
+
   // Return a StreamingTextResponse
   return new StreamingTextResponse(stream);
 }
@@ -52,9 +52,9 @@ export async function getCompletion(messages: any[], options: Record<string, any
     };
 
     logger.info('Requesting completion from OpenAI', { model: completionOptions.model });
-    
+
     const response = await openai.chat.completions.create(completionOptions);
-    
+
     // Return just the content of the completion
     return response.choices[0].message.content;
   } catch (error: any) {

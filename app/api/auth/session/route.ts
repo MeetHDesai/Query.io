@@ -16,10 +16,10 @@ export async function POST(req: Request) {
 
     // Upsert user in Supabase (include all required fields)
     const { data, error } = await supabaseAdmin
-      .from("users")
+      .from('users')
       .upsert({ firebaseUid: decoded.uid, email: decoded.email, firstName, lastName })
       .single();
-    console.log("User upsert:", { data, error });
+    console.log('User upsert:', { data, error });
     if (error) return NextResponse.json({ error }, { status: 500 });
 
     const response = NextResponse.json({ ok: true });

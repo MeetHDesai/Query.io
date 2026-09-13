@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState, ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState, ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 
 interface FadeInSectionProps {
   children: ReactNode;
@@ -14,23 +14,26 @@ export function FadeInSection({ children, className, delay = 0 }: FadeInSectionP
   const domRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            setIsVisible(true);
-          }, delay);
-        }
-      });
-    }, {
-      threshold: 0.1
-    });
-    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              setIsVisible(true);
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+
     const currentRef = domRef.current;
     if (currentRef) {
       observer.observe(currentRef);
     }
-    
+
     return () => {
       if (currentRef) {
         observer.unobserve(currentRef);
@@ -41,14 +44,10 @@ export function FadeInSection({ children, className, delay = 0 }: FadeInSectionP
   return (
     <div
       ref={domRef}
-      className={cn(
-        "fade-in-section",
-        isVisible && "is-visible",
-        className
-      )}
+      className={cn('fade-in-section', isVisible && 'is-visible', className)}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
     </div>
   );
-} 
+}

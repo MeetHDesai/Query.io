@@ -1,16 +1,16 @@
 /**
  * Server-side authentication utilities for getServerSideProps
- * 
+ *
  * This module provides helper functions to verify Firebase authentication
  * in getServerSideProps functions and protect server-rendered pages.
  */
 
-import { GetServerSidePropsContext } from "next";
-import { parseCookies } from "nookies";
-import { admin } from "./auth";
-import { logger } from "./logger";
+import { GetServerSidePropsContext } from 'next';
+import { parseCookies } from 'nookies';
+import { admin } from './auth';
+import { logger } from './logger';
 
-const FIREBASE_TOKEN_COOKIE = "firebaseToken";
+const FIREBASE_TOKEN_COOKIE = 'firebaseToken';
 
 interface DecodedToken {
   uid: string;
@@ -21,7 +21,7 @@ interface DecodedToken {
 
 /**
  * Verifies the Firebase ID token stored in cookies.
- * 
+ *
  * @param context - GetServerSidePropsContext from Next.js
  * @returns The decoded token if valid, null if no token or invalid
  */
@@ -42,18 +42,18 @@ export async function verifyAuthToken(
     const decodedToken = await admin.auth().verifyIdToken(token);
     return decodedToken;
   } catch (error) {
-    logger.error("Server-side auth error: %O", error);
+    logger.error('Server-side auth error: %O', error);
     return null;
   }
 }
 
 /**
  * Higher-order function for protected pages using getServerSideProps.
- * 
+ *
  * @param handler - The original getServerSideProps function
  * @param redirectUrl - URL to redirect unauthenticated users to
  * @returns Enhanced getServerSideProps function with auth check
- * 
+ *
  * @example
  * export const getServerSideProps = withServerAuth(
  *   async (context, token) => {
@@ -64,11 +64,8 @@ export async function verifyAuthToken(
  * );
  */
 export function withServerAuth(
-  handler: (
-    context: GetServerSidePropsContext,
-    token: DecodedToken
-  ) => Promise<any>,
-  redirectUrl: string = "/login"
+  handler: (context: GetServerSidePropsContext, token: DecodedToken) => Promise<any>,
+  redirectUrl: string = '/login'
 ) {
   return async (context: GetServerSidePropsContext) => {
     const token = await verifyAuthToken(context);
@@ -90,10 +87,10 @@ export function withServerAuth(
 
 /**
  * Function to set Firebase token cookie
- * 
+ *
  * Use this client-side after getting a token from Firebase auth
  * import { setCookie } from "nookies";
- * 
+ *
  * @example
  * const idToken = await auth.currentUser.getIdToken();
  * setCookie(null, "firebaseToken", idToken, {
@@ -103,4 +100,4 @@ export function withServerAuth(
  *   httpOnly: true,
  *   sameSite: "lax"
  * });
- */ 
+ */

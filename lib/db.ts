@@ -12,14 +12,14 @@ export interface DatabaseConnection {
   id: string;
   userId: string;
   name: string;
-  type: "mysql" | "postgresql" | "mongodb" | "sqlite";
+  type: 'mysql' | 'postgresql' | 'mongodb' | 'sqlite';
   host?: string;
   port?: number;
   username?: string;
   password?: string;
   database?: string;
   connectionString?: string;
-  status: "connected" | "disconnected";
+  status: 'connected' | 'disconnected';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,14 +37,14 @@ export interface ChatMessage {
   id: string;
   chatId: string;
   content: string;
-  sender: "user" | "assistant";
+  sender: 'user' | 'assistant';
   timestamp: Date;
   results?: QueryResult | null;
 }
 
 export interface QueryResult {
-  type: "table" | "chart" | "both";
-  chartType?: "line" | "bar";
+  type: 'table' | 'chart' | 'both';
+  chartType?: 'line' | 'bar';
   data: any[];
   columns: string[];
   sql: string;
@@ -62,77 +62,79 @@ const messages: Map<string, ChatMessage[]> = new Map();
 function initDemoData() {
   // Demo user
   const user: User = {
-    id: "user-1",
-    name: "John Doe",
-    email: "john@example.com",
+    id: 'user-1',
+    name: 'John Doe',
+    email: 'john@example.com',
   };
   users.set(user.id, user);
 
   // Demo connections
   const demoConnections: DatabaseConnection[] = [
     {
-      id: "db-1",
+      id: 'db-1',
       userId: user.id,
-      name: "Product Database",
-      type: "postgresql",
-      host: "db.example.com",
-      status: "connected",
+      name: 'Product Database',
+      type: 'postgresql',
+      host: 'db.example.com',
+      status: 'connected',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
-      id: "db-2",
+      id: 'db-2',
       userId: user.id,
-      name: "Customer Analytics",
-      type: "mysql",
-      host: "analytics.example.com",
-      status: "connected",
+      name: 'Customer Analytics',
+      type: 'mysql',
+      host: 'analytics.example.com',
+      status: 'connected',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
   ];
-  
-  demoConnections.forEach(conn => connections.set(conn.id, conn));
+
+  demoConnections.forEach((conn) => connections.set(conn.id, conn));
 
   // Demo chats
   const demoChats: ChatSession[] = [
     {
-      id: "chat-1",
+      id: 'chat-1',
       userId: user.id,
-      title: "Product Queries",
-      connectionId: "db-1",
+      title: 'Product Queries',
+      connectionId: 'db-1',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
-      id: "chat-2",
+      id: 'chat-2',
       userId: user.id,
-      title: "Customer Analysis",
-      connectionId: "db-2",
+      title: 'Customer Analysis',
+      connectionId: 'db-2',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
   ];
-  
-  demoChats.forEach(chat => chats.set(chat.id, chat));
+
+  demoChats.forEach((chat) => chats.set(chat.id, chat));
 
   // Demo messages
-  messages.set("chat-1", [
+  messages.set('chat-1', [
     {
-      id: "msg-1",
-      chatId: "chat-1",
-      content: "Hello! I'm your QueryIO assistant. What would you like to know about your database?",
-      sender: "assistant",
+      id: 'msg-1',
+      chatId: 'chat-1',
+      content:
+        "Hello! I'm your QueryIO assistant. What would you like to know about your database?",
+      sender: 'assistant',
       timestamp: new Date(),
     },
   ]);
-  
-  messages.set("chat-2", [
+
+  messages.set('chat-2', [
     {
-      id: "msg-1",
-      chatId: "chat-2",
-      content: "Hello! I'm your QueryIO assistant. What would you like to know about your database?",
-      sender: "assistant",
+      id: 'msg-1',
+      chatId: 'chat-2',
+      content:
+        "Hello! I'm your QueryIO assistant. What would you like to know about your database?",
+      sender: 'assistant',
       timestamp: new Date(),
     },
   ]);
@@ -145,23 +147,23 @@ initDemoData();
 export const dbService = {
   // User methods
   getUserByEmail: (email: string) => {
-    return Array.from(users.values()).find(user => user.email === email) || null;
+    return Array.from(users.values()).find((user) => user.email === email) || null;
   },
-  
+
   getUserById: (id: string) => {
     return users.get(id) || null;
   },
-  
+
   // Connection methods
   getConnectionsByUserId: (userId: string) => {
-    return Array.from(connections.values()).filter(conn => conn.userId === userId);
+    return Array.from(connections.values()).filter((conn) => conn.userId === userId);
   },
-  
+
   getConnectionById: (id: string) => {
     return connections.get(id) || null;
   },
-  
-  createConnection: (data: Omit<DatabaseConnection, "id" | "createdAt" | "updatedAt">) => {
+
+  createConnection: (data: Omit<DatabaseConnection, 'id' | 'createdAt' | 'updatedAt'>) => {
     const id = `db-${Date.now()}`;
     const newConnection: DatabaseConnection = {
       ...data,
@@ -172,17 +174,17 @@ export const dbService = {
     connections.set(id, newConnection);
     return newConnection;
   },
-  
+
   // Chat methods
   getChatsByUserId: (userId: string) => {
-    return Array.from(chats.values()).filter(chat => chat.userId === userId);
+    return Array.from(chats.values()).filter((chat) => chat.userId === userId);
   },
-  
+
   getChatById: (id: string) => {
     return chats.get(id) || null;
   },
-  
-  createChat: (data: Omit<ChatSession, "id" | "createdAt" | "updatedAt">) => {
+
+  createChat: (data: Omit<ChatSession, 'id' | 'createdAt' | 'updatedAt'>) => {
     const id = `chat-${Date.now()}`;
     const newChat: ChatSession = {
       ...data,
@@ -195,31 +197,32 @@ export const dbService = {
       {
         id: `msg-init-${Date.now()}`,
         chatId: id,
-        content: "Hello! I'm your QueryIO assistant. What would you like to know about your database?",
-        sender: "assistant",
+        content:
+          "Hello! I'm your QueryIO assistant. What would you like to know about your database?",
+        sender: 'assistant',
         timestamp: new Date(),
       },
     ]);
     return newChat;
   },
-  
+
   // Message methods
   getMessagesByChatId: (chatId: string) => {
     return messages.get(chatId) || [];
   },
-  
-  addMessage: (chatId: string, message: Omit<ChatMessage, "id" | "chatId">) => {
+
+  addMessage: (chatId: string, message: Omit<ChatMessage, 'id' | 'chatId'>) => {
     const id = `msg-${Date.now()}`;
     const newMessage: ChatMessage = {
       ...message,
       id,
       chatId,
     };
-    
+
     const chatMessages = messages.get(chatId) || [];
     chatMessages.push(newMessage);
     messages.set(chatId, chatMessages);
-    
+
     return newMessage;
   },
-}; 
+};

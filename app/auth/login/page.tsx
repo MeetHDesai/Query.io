@@ -1,45 +1,45 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import Image from "next/image"
+import { useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import Image from 'next/image';
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
     try {
-      const result = await signIn("credentials", {
+      const result = await signIn('credentials', {
         redirect: false,
         email,
         password,
-      })
+      });
 
       if (result?.error) {
-        setError("Invalid credentials")
-        setIsLoading(false)
-        return
+        setError('Invalid credentials');
+        setIsLoading(false);
+        return;
       }
 
       // Redirect to dashboard on successful login
-      router.push("/dashboard")
+      router.push('/dashboard');
     } catch (error) {
-      setError("An error occurred. Please try again.")
-      setIsLoading(false)
+      setError('An error occurred. Please try again.');
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-black text-white">
@@ -47,7 +47,7 @@ export default function LoginPage() {
         <div className="text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#1a1a1a]">
             <Image
-              src="/placeholder.svg?height=32&width=32" 
+              src="/placeholder.svg?height=32&width=32"
               alt="QueryIO Logo"
               width={32}
               height={32}
@@ -58,11 +58,7 @@ export default function LoginPage() {
           <p className="mt-2 text-sm text-zinc-400">Sign in to your account</p>
         </div>
 
-        {error && (
-          <div className="rounded-md bg-red-900/20 p-4 text-sm text-red-500">
-            {error}
-          </div>
-        )}
+        {error && <div className="rounded-md bg-red-900/20 p-4 text-sm text-red-500">{error}</div>}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4 rounded-md">
@@ -105,7 +101,7 @@ export default function LoginPage() {
               className="w-full bg-white hover:bg-gray-200 text-black"
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
           </div>
         </form>
@@ -124,7 +120,7 @@ export default function LoginPage() {
             <Button
               type="button"
               className="w-full border border-zinc-800 bg-[#1a1a1a] text-white hover:bg-[#242424]"
-              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
             >
               <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
                 <path
@@ -150,5 +146,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

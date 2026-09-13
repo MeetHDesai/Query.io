@@ -1,43 +1,43 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
-import { useAuth } from "@/app/contexts/AuthContext";
-import { AlertCircle } from "lucide-react";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useState } from 'react';
+import { useAuth } from '@/app/contexts/AuthContext';
+import { AlertCircle } from 'lucide-react';
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const { register, loginWithGoogle, loginWithGithub } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agreedToTerms) return;
-    
-    setError("");
+
+    setError('');
     setIsLoading(true);
-    
+
     try {
       await register(email, password, firstName, lastName);
       // Redirect is handled inside register function
     } catch (error: any) {
-      let errorMessage = "Registration failed. Please try again.";
+      let errorMessage = 'Registration failed. Please try again.';
       if (error.code === 'auth/email-already-in-use') {
-        errorMessage = "Email is already in use. Please use a different email.";
+        errorMessage = 'Email is already in use. Please use a different email.';
       } else if (error.code === 'auth/weak-password') {
-        errorMessage = "Password is too weak. Please use a stronger password.";
+        errorMessage = 'Password is too weak. Please use a stronger password.';
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = "Invalid email address.";
+        errorMessage = 'Invalid email address.';
       }
       setError(errorMessage);
     } finally {
@@ -46,36 +46,36 @@ export default function RegisterPage() {
   };
 
   const handleGoogleSignUp = async () => {
-    setError("");
+    setError('');
     try {
       await loginWithGoogle();
       // Redirect is handled inside loginWithGoogle function
     } catch (error: any) {
-      let errorMessage = "Failed to sign up with Google. Please try again.";
+      let errorMessage = 'Failed to sign up with Google. Please try again.';
       if (error.code === 'auth/popup-closed-by-user') {
-        errorMessage = "Sign-up popup was closed before completing the process.";
+        errorMessage = 'Sign-up popup was closed before completing the process.';
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error("Google signup error:", error);
+      console.error('Google signup error:', error);
     }
   };
 
   const handleGithubSignUp = async () => {
-    setError("");
+    setError('');
     try {
       await loginWithGithub();
       // Redirect is handled inside loginWithGithub function
     } catch (error: any) {
-      let errorMessage = "Failed to sign up with GitHub. Please try again.";
+      let errorMessage = 'Failed to sign up with GitHub. Please try again.';
       if (error.code === 'auth/popup-closed-by-user') {
-        errorMessage = "Sign-up popup was closed before completing the process.";
+        errorMessage = 'Sign-up popup was closed before completing the process.';
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = "Network error. Please check your connection and try again.";
+        errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error("GitHub signup error:", error);
+      console.error('GitHub signup error:', error);
     }
   };
 
@@ -224,11 +224,11 @@ export default function RegisterPage() {
                 className="mt-1 data-[state=checked]:bg-white data-[state=checked]:border-white"
               />
               <label htmlFor="terms" className="text-sm text-[#999] leading-tight">
-                By signing up you agree to the{" "}
+                By signing up you agree to the{' '}
                 <Link href="/terms" className="text-white hover:underline">
                   terms and services
-                </Link>{" "}
-                and the{" "}
+                </Link>{' '}
+                and the{' '}
                 <Link href="/privacy" className="text-white hover:underline">
                   privacy policy
                 </Link>
@@ -241,14 +241,14 @@ export default function RegisterPage() {
               className="w-full bg-white hover:bg-gray-200 text-black h-12 mt-6"
               disabled={isLoading || !agreedToTerms}
             >
-              {isLoading ? "Creating account..." : "Continue"}
+              {isLoading ? 'Creating account...' : 'Continue'}
             </Button>
           </form>
         </div>
 
         <div className="text-center mt-6">
           <p className="text-[#999] text-sm">
-            Already have an account?{" "}
+            Already have an account?{' '}
             <Link href="/login" className="text-white hover:underline">
               Log in
             </Link>
@@ -257,4 +257,4 @@ export default function RegisterPage() {
       </div>
     </div>
   );
-} 
+}

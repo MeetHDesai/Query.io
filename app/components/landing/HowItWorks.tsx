@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface HowItWorksProps {
   className?: string;
@@ -8,11 +8,13 @@ interface HowItWorksProps {
 
 export function HowItWorks({ className }: HowItWorksProps) {
   return (
-    <section className={cn("w-full py-12 md:py-24 lg:py-32 bg-black", className)}>
+    <section className={cn('w-full py-12 md:py-24 lg:py-32 bg-black', className)}>
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">How It Works</div>
+            <div className="inline-block rounded-lg bg-zinc-800 px-3 py-1 text-sm text-white">
+              How It Works
+            </div>
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl text-white">
               From Natural Language to Database Results
             </h2>
@@ -33,7 +35,7 @@ export function HowItWorks({ className }: HowItWorksProps) {
               <div className="space-y-4">
                 <div className="rounded-lg bg-zinc-800 p-4">
                   <p className="font-medium text-white">
-                    "Show me all customers who spent more than $1000 last month"
+                    &quot;Show me all customers who spent more than $1000 last month&quot;
                   </p>
                 </div>
                 <div className="flex items-center">
@@ -74,21 +76,37 @@ ORDER BY total_spent DESC;`}
                     </thead>
                     <tbody className="bg-zinc-900 divide-y divide-zinc-800">
                       <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">John Smith</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">john@example.com</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white">$2,450.00</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                          John Smith
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
+                          john@example.com
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                          $2,450.00
+                        </td>
                       </tr>
                       <tr>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                           Sarah Johnson
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">sarah@example.com</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white">$1,875.50</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
+                          sarah@example.com
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                          $1,875.50
+                        </td>
                       </tr>
                       <tr>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">Michael Chen</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">michael@example.com</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white">$1,340.25</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                          Michael Chen
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-400">
+                          michael@example.com
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                          $1,340.25
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -100,4 +118,4 @@ ORDER BY total_spent DESC;`}
       </div>
     </section>
   );
-} 
+}
