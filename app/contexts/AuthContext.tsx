@@ -16,6 +16,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '@/app/lib/firebase';
 import { setCookie, destroyCookie } from 'nookies';
+import { logger } from '@/lib/logger';
 
 // Name of the cookie where we store the Firebase token
 const FIREBASE_TOKEN_COOKIE = 'firebaseToken';
@@ -49,8 +50,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const storeUserToken = async (firebaseUser: FirebaseUser) => {
     try {
       const token = await firebaseUser.getIdToken();
-      console.log('[storeUserToken] Got token:', token);
-      console.log('[storeUserToken] Firebase user:', {
+      logger.info('[storeUserToken] Got token:', token);
+      logger.info('[storeUserToken] Firebase user:', {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         displayName: firebaseUser.displayName,
@@ -64,14 +65,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify({ token }),
       });
-      console.log(
+      logger.info(
         '[storeUserToken] /api/auth/set-cookie response:',
         response.status,
         response.statusText
       );
       if (!response.ok) {
         const text = await response.text();
-        console.error('[storeUserToken] Error response body:', text);
+        logger.error('[storeUserToken] Error response body:', text);
         throw new Error('Failed to set auth cookie via API');
       }
       setCookie(null, 'clientToken', token, {
@@ -81,14 +82,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         sameSite: 'lax',
       });
     } catch (error) {
-      console.error('Failed to store user token:', error);
+      logger.error('Failed to store user token:', error);
     }
   };
 
   // Check for existing user session on mount and subscribe to auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log('[onAuthStateChanged] Firebase user:', firebaseUser);
+      logger.info('[onAuthStateChanged] Firebase user:', firebaseUser);
       if (firebaseUser) {
         setUser({
           uid: firebaseUser.uid,
@@ -108,7 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               'Unknown',
             lastName: firebaseUser.displayName?.split(' ').slice(1).join(' ') || 'User',
           };
-          console.log('[onAuthStateChanged] Syncing user with body:', body);
+          logger.info('[onAuthStateChanged] Syncing user with body:', body);
           const syncRes = await fetch('/api/auth/sync-user', {
             method: 'POST',
             headers: {
@@ -117,17 +118,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             },
             body: JSON.stringify(body),
           });
-          console.log(
+          logger.info(
             '[onAuthStateChanged] /api/auth/sync-user response:',
             syncRes.status,
             syncRes.statusText
           );
           if (!syncRes.ok) {
             const text = await syncRes.text();
-            console.error('[onAuthStateChanged] Error syncing user:', text);
+            logger.error('[onAuthStateChanged] Error syncing user:', text);
           }
         } catch (error) {
-          console.error('Failed to sync user with database:', error);
+          logger.error('Failed to sync user with database:', error);
         }
       } else {
         setUser(null);
@@ -156,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await storeUserToken(currentUser);
       }
     } catch (error) {
-      console.error('Failed to refresh user data:', error);
+      logger.error('Failed to refresh user data:', error);
     }
   };
 
@@ -171,7 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await sendEmailVerification(currentUser);
       return;
     } catch (error) {
-      console.error('Failed to send verification email:', error);
+      logger.error('Failed to send verification email:', error);
       throw error;
     }
   };
@@ -191,7 +192,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error('Login failed: No user returned');
       }
     } catch (error) {
-      console.error('Login failed:', error);
+      logger.error('Login failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -213,7 +214,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error('Google login failed: No user returned');
       }
     } catch (error) {
-      console.error('Google login failed:', error);
+      logger.error('Google login failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -235,7 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error('GitHub login failed: No user returned');
       }
     } catch (error) {
-      console.error('GitHub login failed:', error);
+      logger.error('GitHub login failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -260,16 +261,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             body: JSON.stringify({ idToken, firstName, lastName }),
           });
           if (!response.ok) {
-            console.error('Failed to sync user to Supabase:', await response.text());
+            logger.error('Failed to sync user to Supabase:', await response.text());
           }
         } catch (syncError) {
-          console.error('Error syncing user to Supabase:', syncError);
+          logger.error('Error syncing user to Supabase:', syncError);
         }
       }
       // Only redirect after sync attempt
       router.push('/email-verification');
     } catch (error) {
-      console.error('Registration failed:', error);
+      logger.error('Registration failed:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -284,7 +285,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Token is handled by onAuthStateChanged
       router.push('/');
     } catch (error) {
-      console.error('Logout failed:', error);
+      logger.error('Logout failed:', error);
       throw error;
     } finally {
       setIsLoading(false);

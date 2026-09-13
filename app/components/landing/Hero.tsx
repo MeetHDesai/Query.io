@@ -11,7 +11,7 @@ interface HeroProps {
 }
 
 export function Hero({ className }: HeroProps) {
-  const { user } = useAuth();
+  useAuth();
 
   return (
     <section

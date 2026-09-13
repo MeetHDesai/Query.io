@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/app/lib/firebase';
 import { AlertCircle, CheckCircle } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState('');
@@ -39,7 +40,7 @@ export default function ResetPasswordPage() {
       }
 
       setError(errorMessage);
-      console.error('Password reset error:', error);
+      logger.error('Password reset error:', error);
     } finally {
       setIsLoading(false);
     }

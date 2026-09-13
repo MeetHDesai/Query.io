@@ -5,7 +5,7 @@ import { logger } from './logger';
 const openaiApiKey = process.env.OPENAI_API_KEY;
 
 if (!openaiApiKey) {
-  console.error('OpenAI API key must be provided in environment variables');
+  logger.error('OpenAI API key must be provided in environment variables');
 }
 
 export const openai = new OpenAI({

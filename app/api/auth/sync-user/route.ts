@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { syncUserFromFirebase, getUserByFirebaseId } from '@/lib/userService';
-import { verifyAuthToken } from '@/lib/serverAuth';
+import { syncUserFromFirebase } from '@/lib/userService';
 import { admin } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 

@@ -1,22 +1,11 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
-import Image from 'next/image';
 import { User } from 'lucide-react';
 
 interface AdvertisingProps {
   className?: string;
 }
-
-const companies = [
-  { name: 'Company 1', logo: '/placeholder.svg' },
-  { name: 'Company 2', logo: '/placeholder.svg' },
-  { name: 'Company 3', logo: '/placeholder.svg' },
-  { name: 'Company 4', logo: '/placeholder.svg' },
-  { name: 'Company 5', logo: '/placeholder.svg' },
-  { name: 'Company 6', logo: '/placeholder.svg' },
-];
 
 interface TestimonialsProps {
   className?: string;

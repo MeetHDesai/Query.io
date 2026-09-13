@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { AlertCircle } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -36,7 +37,7 @@ export default function LoginPage() {
         errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error('Login error:', error);
+      logger.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +56,7 @@ export default function LoginPage() {
         errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error('Google login error:', error);
+      logger.error('Google login error:', error);
     }
   };
 
@@ -72,7 +73,7 @@ export default function LoginPage() {
         errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error('GitHub login error:', error);
+      logger.error('GitHub login error:', error);
     }
   };
 

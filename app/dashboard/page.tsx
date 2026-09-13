@@ -54,14 +54,6 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
   LineChart,
   Line,
   BarChart as RechartsBarChart,
@@ -80,25 +72,8 @@ import {
 } from 'recharts';
 import { toast } from 'sonner'; // Import toast from sonner
 import ReactMarkdown from 'react-markdown';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-} from '@/components/ui/chart';
 import { QueryChart } from '@/app/dashboard/components/QueryChart';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { QueryResultComponent } from '@/app/dashboard/components/QueryResult';
-
-// Import Supabase service
-import {
-  supabaseService,
-  DatabaseConnectionDB,
-  ChatSessionDB,
-  ChatMessageDB,
-} from '@/lib/supabase';
+import { logger } from '@/lib/logger';
 
 // Types
 interface Message {
@@ -187,25 +162,12 @@ export default function Dashboard() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showNewConnectionDialog, setShowNewConnectionDialog] = useState(false);
   const [showNewChatDialog, setShowNewChatDialog] = useState(false);
-  const [activeResultView, setActiveResultView] = useState<'table' | 'chart'>('chart');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [databases, setDatabases] = useState<DatabaseConnection[]>([]);
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [, setIsStreaming] = useState(false);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState('');
-  const [openQuery, setOpenQuery] = useState(false);
-  const [sqlQuery, setSqlQuery] = useState('');
-  const [selectedTable, setSelectedTable] = useState<string | null>(null);
-  const [tables, setTables] = useState<any[]>([]);
-  const [records, setRecords] = useState<any[]>([]);
-  const [queryResult, setQueryResult] = useState<any[]>([]);
-  const [charts, setCharts] = useState<{ id: string; title: string; data: any[] }[]>([]);
-  const [databaseSaved, setDatabaseSaved] = useState(false);
-  const [messageResultViews, setMessageResultViews] = useState<Record<string, 'table' | 'chart'>>(
-    {}
-  );
   const [messageViewPreferences, setMessageViewPreferences] = useState<
     Record<string, 'table' | 'chart'>
   >({});
@@ -228,7 +190,7 @@ export default function Dashboard() {
           const firebaseToken = cookies.clientToken;
 
           if (!firebaseToken) {
-            console.error('No Firebase token found in cookies');
+            logger.error('No Firebase token found in cookies');
             toast.error('Authentication error. Please log in again.');
             router.push('/login');
             return;
@@ -239,7 +201,7 @@ export default function Dashboard() {
             'Content-Type': 'application/json',
           };
 
-          console.log('Fetching user data with Firebase token');
+          logger.info('Fetching user data with Firebase token');
 
           // Fetch database connections from API
           const connectionsResponse = await fetch('/api/user/connections', {
@@ -251,7 +213,7 @@ export default function Dashboard() {
           }
           const dbConnections = await connectionsResponse.json();
 
-          console.log('Fetched connections:', dbConnections); // Debug log
+          logger.info('Fetched connections:', dbConnections); // Debug log
 
           // Convert data format to app format
           const formattedConnections: DatabaseConnection[] = dbConnections.map((conn: any) => ({
@@ -274,7 +236,7 @@ export default function Dashboard() {
           }
           const chatsData = await chatsResponse.json();
 
-          console.log('Fetched chats:', chatsData); // Debug log
+          logger.info('Fetched chats:', chatsData); // Debug log
 
           // Format chats and messages for the app with proper parsing
           const chatsWithMessages: ChatSession[] = chatsData.map((chat: any) => {
@@ -293,7 +255,7 @@ export default function Dashboard() {
                     try {
                       parsedResults = JSON.parse(msg.results);
                     } catch (e) {
-                      console.error('Failed to parse query_result results field:', e);
+                      logger.error('Failed to parse query_result results field:', e);
                     }
                   } else {
                     parsedResults = msg.results;
@@ -302,9 +264,9 @@ export default function Dashboard() {
                   // Fallback: try to parse content as JSON if results is missing
                   try {
                     parsedResults = JSON.parse(messageContent);
-                    console.log('Parsed query_result from content as fallback');
+                    logger.info('Parsed query_result from content as fallback');
                   } catch (e) {
-                    console.error('Failed to parse query_result content as fallback:', e);
+                    logger.error('Failed to parse query_result content as fallback:', e);
                   }
                 }
               } else if (msg.results) {
@@ -313,7 +275,7 @@ export default function Dashboard() {
                   try {
                     parsedResults = JSON.parse(msg.results);
                   } catch (e) {
-                    console.error('Failed to parse message results:', e);
+                    logger.error('Failed to parse message results:', e);
                   }
                 } else {
                   parsedResults = msg.results;
@@ -346,7 +308,7 @@ export default function Dashboard() {
                 sender = 'user';
               }
 
-              console.log('Processing message:', {
+              logger.info('Processing message:', {
                 id: msg.id,
                 content:
                   typeof messageContent === 'string'
@@ -376,14 +338,14 @@ export default function Dashboard() {
           });
 
           setChatSessions(chatsWithMessages);
-          console.log('State after setChatSessions:', chatsWithMessages);
+          logger.info('State after setChatSessions:', chatsWithMessages);
 
           // Set active tab to first chat if available
           if (chatsWithMessages.length > 0 && !activeTab) {
             setActiveTab(chatsWithMessages[0].id);
           }
         } catch (error) {
-          console.error('Error fetching user data:', error);
+          logger.error('Error fetching user data:', error);
           toast.error('Failed to load your data. Please try again.');
         } finally {
           setIsLoading(false);
@@ -448,7 +410,7 @@ export default function Dashboard() {
       const firebaseToken = cookies.clientToken;
 
       if (!firebaseToken) {
-        console.error('No Firebase token found in cookies');
+        logger.error('No Firebase token found in cookies');
         toast.error('Authentication error. Please log in again.');
         router.push('/login');
         return;
@@ -467,7 +429,7 @@ export default function Dashboard() {
       });
 
       // Log the messages being sent to API
-      console.log('Sending messages to API:', messages);
+      logger.info('Sending messages to API:', messages);
 
       // Create a placeholder for the AI response
       const aiResponseId = `msg-${Date.now()}-2`;
@@ -503,7 +465,7 @@ export default function Dashboard() {
       );
 
       // Debug: Log placeholder message
-      console.log('Added placeholder message:', placeholder);
+      logger.info('Added placeholder message:', placeholder);
 
       // Call the streaming chat API
       const response = await fetch(`/api/connections/${activeChat.connectionId}/query/stream`, {
@@ -557,16 +519,13 @@ export default function Dashboard() {
                     // Format results as Markdown for table type responses
                     if (responseJson?.outputType === 'table' && responseJson?.data) {
                       const markdownTable = generateMarkdownTable(responseJson.data);
-                      const sqlBlock = responseJson.sql
-                        ? `\`\`\`sql\n${responseJson.sql}\n\`\`\``
-                        : '';
                       const explanation = responseJson.explanation || '';
 
                       content = `${explanation}`;
 
                       // Add debug information
-                      console.log('Table data received:', responseJson.data);
-                      console.log('Generated markdown table:', markdownTable);
+                      logger.info('Table data received:', responseJson.data);
+                      logger.info('Generated markdown table:', markdownTable);
                     }
 
                     return {
@@ -626,7 +585,7 @@ export default function Dashboard() {
         try {
           responseJson = JSON.parse(streamedText) as QueryResponseJson;
         } catch (e) {
-          console.error('Could not parse streamed response as JSON:', e);
+          logger.error('Could not parse streamed response as JSON:', e);
           // Keep the streamed text as is
         }
       }
@@ -634,7 +593,7 @@ export default function Dashboard() {
       // Stream completed successfully
       setStreamingMessageId(null);
     } catch (error) {
-      console.error('Error sending message:', error);
+      logger.error('Error sending message:', error);
 
       // Add an error message to the chat
       const errorMessage: Message = {
@@ -710,8 +669,8 @@ export default function Dashboard() {
       }
 
       // LOGGING: Log the connection data and token
-      console.log('[handleAddDatabase] connectionData:', connectionData);
-      console.log('[handleAddDatabase] Authorization header:', `Bearer ${firebaseToken}`);
+      logger.info('[handleAddDatabase] connectionData:', connectionData);
+      logger.info('[handleAddDatabase] Authorization header:', `Bearer ${firebaseToken}`);
 
       // Create connection via API
       const response = await fetch('/api/connections', {
@@ -724,7 +683,7 @@ export default function Dashboard() {
       });
 
       // LOGGING: Log the response status and body
-      console.log(
+      logger.info(
         '[handleAddDatabase] /api/connections response:',
         response.status,
         response.statusText
@@ -735,7 +694,7 @@ export default function Dashboard() {
       } catch (e) {
         responseBody = await response.text();
       }
-      console.log('[handleAddDatabase] /api/connections response body:', responseBody);
+      logger.info('[handleAddDatabase] /api/connections response body:', responseBody);
 
       if (!response.ok) {
         // Try to get a more specific error message from the response
@@ -769,7 +728,7 @@ export default function Dashboard() {
 
       setShowNewConnectionDialog(false);
     } catch (error) {
-      console.error('Error creating database connection:', error);
+      logger.error('Error creating database connection:', error);
 
       // Display a user-friendly error message
       let errorMessage = 'Failed to create database connection. Please try again.';
@@ -847,7 +806,7 @@ export default function Dashboard() {
       setActiveTab(newChat.id);
       setShowNewChatDialog(false);
     } catch (error) {
-      console.error('Error creating chat:', error);
+      logger.error('Error creating chat:', error);
       toast.error('Chat Creation Failed', {
         description: 'Failed to create chat. Please try again.',
       });
@@ -1255,22 +1214,6 @@ export default function Dashboard() {
     );
   };
 
-  // Function to add a chart
-  const addChart = () => {
-    if (queryResult.length > 0) {
-      // Create a chart from the current query result
-      const chartId = `chart-${Date.now()}`;
-      const chartTitle = `Chart ${charts.length + 1}`;
-
-      setCharts((prev) => [...prev, { id: chartId, title: chartTitle, data: queryResult }]);
-    }
-  };
-
-  // Function to remove a chart
-  const removeChart = (chartId: string) => {
-    setCharts((prev) => prev.filter((chart) => chart.id !== chartId));
-  };
-
   return (
     <div className="flex h-screen bg-black text-zinc-100">
       {/* Sidebar */}
@@ -1492,7 +1435,7 @@ export default function Dashboard() {
         <div className="flex-1 overflow-hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
             <TabsList>
-              {console.log(
+              {logger.info(
                 'Rendering chat tabs with titles:',
                 chatSessions.map((c) => c.title)
               )}

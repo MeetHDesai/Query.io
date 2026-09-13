@@ -1,5 +1,5 @@
 import { admin } from '@/lib/auth';
-import { executeQuery, getDatabaseSchema, QueryResult } from '@/lib/queryService';
+import { getDatabaseSchema } from '@/lib/queryService';
 import { logger } from '@/lib/logger';
 import { QueryError } from '@/lib/utils';
 import { prisma } from '@/lib/prisma';

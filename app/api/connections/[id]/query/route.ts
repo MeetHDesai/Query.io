@@ -6,7 +6,6 @@ import { QueryError } from '@/lib/utils';
 import { prisma } from '@/lib/prisma';
 import openai from '@/lib/openai';
 import { type ChatCompletionMessageParam } from 'openai/resources/chat/completions';
-import { extractSQL } from '@/lib/sqlValidator';
 
 /**
  * API endpoint for database queries
@@ -210,7 +209,7 @@ ${schema}`,
       }
 
       // 5. Parse the response and determine next steps
-      const { sql, outputType, chartSpec, data, chartData, chartConfig, answer, explanation } =
+      const { sql, outputType, chartSpec, chartData, chartConfig, answer, explanation } =
         responseJson;
 
       let queryResults: QueryResult | null = null;

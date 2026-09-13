@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { AlertCircle, CheckCircle, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { logger } from '@/lib/logger';
 
 export default function EmailVerificationPage() {
   const { user, isLoading, sendVerificationEmail, refreshUserData, logout } = useAuth();
@@ -39,7 +40,7 @@ export default function EmailVerificationPage() {
       await sendVerificationEmail();
       setResendStatus('success');
     } catch (error: any) {
-      console.error('Error sending verification email:', error);
+      logger.error('Error sending verification email:', error);
       setError(
         error.code === 'auth/too-many-requests'
           ? 'Too many verification emails sent recently. Please try again later.'
@@ -62,7 +63,7 @@ export default function EmailVerificationPage() {
         router.push('/dashboard');
       }
     } catch (error) {
-      console.error('Error refreshing user data:', error);
+      logger.error('Error refreshing user data:', error);
       setError('Failed to refresh verification status. Please try again.');
       setRefreshStatus('error');
     }

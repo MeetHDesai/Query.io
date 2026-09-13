@@ -10,6 +10,7 @@
 import admin from 'firebase-admin';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { CONFIG } from './config';
+import { logger } from './logger';
 
 // Ensure Firebase Admin is initialized only once to avoid "Firebase app already exists" errors
 // during hot reloading in development
@@ -23,9 +24,9 @@ if (!admin.apps.length) {
         privateKey: CONFIG.firebase.privateKey,
       }),
     });
-    console.log('Firebase Admin initialized successfully');
+    logger.info('Firebase Admin initialized successfully');
   } catch (error) {
-    console.error('Firebase Admin initialization error:', error);
+    logger.error('Firebase Admin initialization error:', error);
     throw new Error('Failed to initialize Firebase Admin SDK. Check your environment variables.');
   }
 }
@@ -72,7 +73,7 @@ export async function verifyAuth(req: NextApiRequest, res: NextApiResponse, next
     return next();
   } catch (err) {
     // Log the error but don't expose details to the client
-    console.error('Firebase auth error:', err);
+    logger.error('Firebase auth error:', err);
 
     // Check for specific token errors to provide better feedback
     const error = err as Error;

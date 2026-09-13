@@ -1,4 +1,3 @@
-import { supabaseService } from '@/lib/supabase';
 import { admin } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { admin } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { logger } from '@/lib/logger';
 
 const isProd = process.env.NODE_ENV === 'production';
 const COOKIE_NAME = 'qid';
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       .from('users')
       .upsert({ firebaseUid: decoded.uid, email: decoded.email, firstName, lastName })
       .single();
-    console.log('User upsert:', { data, error });
+    logger.info('User upsert:', { data, error });
     if (error) return NextResponse.json({ error }, { status: 500 });
 
     const response = NextResponse.json({ ok: true });

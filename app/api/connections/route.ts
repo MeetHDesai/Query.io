@@ -4,9 +4,10 @@ import { admin } from '@/lib/auth';
 import { supabaseAdminService, supabaseAdmin } from '@/lib/supabase-admin';
 import { encrypt } from '@/lib/encryption';
 import { Client } from 'pg'; // Added import
+import { logger } from '@/lib/logger';
 
 // Log the first few characters of the service role key to confirm it's loaded and distinct from the anon key
-console.log(
+logger.info(
   '[API Connections] Using service role key:',
   process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 5)
 );
@@ -44,7 +45,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(connections);
   } catch (error) {
-    console.error('Error in GET /api/connections:', error);
+    logger.error('Error in GET /api/connections:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
   }
 }
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
     const userId = decodedToken.uid;
 
     // LOGGING: Log the decoded Firebase UID
-    console.log('[API Connections POST] Decoded Firebase UID:', userId);
+    logger.info('[API Connections POST] Decoded Firebase UID:', userId);
 
     // Get user from database by Firebase UID
     const { data: user, error: userError } = await supabaseAdmin
@@ -78,14 +79,14 @@ export async function POST(req: Request) {
       .single();
 
     // LOGGING: Log the user query result
-    console.log('[API Connections POST] User query result:', user, userError);
+    logger.info('[API Connections POST] User query result:', user, userError);
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     const data = await req.json();
-    console.log('Connection data received:', {
+    logger.info('Connection data received:', {
       ...data,
       password: data.password ? '******' : undefined, // Mask password in logs
     });
@@ -130,9 +131,9 @@ export async function POST(req: Request) {
     try {
       await testClient.connect(); // Attempt connection
       await testClient.end(); // Close the connection if successful
-      console.log('[API Connections POST] Connection test successful.');
+      logger.info('[API Connections POST] Connection test successful.');
     } catch (error: any) {
-      console.error('[API Connections POST] Connection test failed:', error);
+      logger.error('[API Connections POST] Connection test failed:', error);
       await testClient.end(); // Ensure client is closed on error too
 
       let errorMessage = 'Failed to connect to the database.';
@@ -156,7 +157,7 @@ export async function POST(req: Request) {
     try {
       encryptedUrl = encrypt(connectionString);
     } catch (encError: any) {
-      console.error('[API Connections POST] Encryption failed:', encError);
+      logger.error('[API Connections POST] Encryption failed:', encError);
       return NextResponse.json(
         { error: 'Failed to secure connection details.', details: encError.message },
         { status: 500 }
@@ -173,18 +174,18 @@ export async function POST(req: Request) {
       port: data.port ? parseInt(data.port, 10) : 5432,
       db_name: data.database,
     };
-    console.log('Inserting connections payload:', payload);
+    logger.info('Inserting connections payload:', payload);
     let newConnection;
     try {
       newConnection = await supabaseAdminService.createConnection(payload);
-      console.log('Insert result:', newConnection);
+      logger.info('Insert result:', newConnection);
     } catch (insertError) {
-      console.error('Insert error:', insertError);
+      logger.error('Insert error:', insertError);
       throw insertError;
     }
     return NextResponse.json(newConnection);
   } catch (error) {
-    console.error('Error creating connection:', error);
+    logger.error('Error creating connection:', error);
 
     // Return a more helpful error message
     let errorMessage = 'Failed to create connection';
