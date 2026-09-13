@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- this file is the intentional sink that every other file's logger calls route through */
 /**
  * Isomorphic Logger Implementation
  *

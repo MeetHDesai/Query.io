@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
+import { logger } from '@/lib/logger';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function LoginPage() {
       // Redirect to dashboard on successful login
       router.push('/dashboard');
     } catch (error) {
+      logger.error('Login failed:', error);
       setError('An error occurred. Please try again.');
       setIsLoading(false);
     }
