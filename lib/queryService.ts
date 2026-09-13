@@ -1,5 +1,4 @@
-import { supabase, supabaseService } from '@/lib/supabase';
-import { validateSQL, extractSQL } from '@/lib/sqlValidator';
+import { validateSQL } from '@/lib/sqlValidator';
 import { logger } from '@/lib/logger';
 import { QueryError } from '@/lib/utils';
 import { prisma } from '@/lib/prisma';

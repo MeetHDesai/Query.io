@@ -434,9 +434,7 @@ function renderChart(result: QueryResult) {
             fill="#8884d8" // Default fill, overridden by Cells
             dataKey={primaryValueKey}
             nameKey={xAxisKey}
-            label={({ name, percent }) =>
-              percent * 100 >= 3 ? `${(percent * 100).toFixed(0)}%` : ''
-            } // Show % only if > 3%
+            label={({ percent }) => (percent * 100 >= 3 ? `${(percent * 100).toFixed(0)}%` : '')} // Show % only if > 3%
             fontSize={10}
             stroke="#18181b" // Background color for separation
             strokeWidth={1}

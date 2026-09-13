@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { CONFIG } from './config';
 import { DatabaseConnectionDB, ChatSessionDB, ChatMessageDB } from './supabase';
+import { logger } from './logger';
 
 // Create a Supabase client with admin privileges using the service role key
 // This client should ONLY be used in server-side contexts (API routes, Server Components, etc.)
@@ -19,7 +20,7 @@ export const supabaseAdminService = {
     const { data, error } = await supabaseAdmin.from('users').select('*').eq('id', userId).single();
 
     if (error) {
-      console.error('Error fetching user:', error);
+      logger.error('Error fetching user:', error);
       return null;
     }
 
@@ -34,7 +35,7 @@ export const supabaseAdminService = {
       .eq('user_id', userId);
 
     if (error) {
-      console.error('Error fetching connections:', error);
+      logger.error('Error fetching connections:', error);
       return [];
     }
 
@@ -56,7 +57,7 @@ export const supabaseAdminService = {
       .single();
 
     if (error) {
-      console.error('Error fetching connection:', error);
+      logger.error('Error fetching connection:', error);
       return null;
     }
 
@@ -84,7 +85,7 @@ export const supabaseAdminService = {
       .select()
       .single();
     if (error) {
-      console.error('Error creating connection:', error);
+      logger.error('Error creating connection:', error);
       throw error;
     }
     // Map DB result to camelCase
@@ -106,7 +107,7 @@ export const supabaseAdminService = {
       .eq('user_id', userId);
 
     if (connectionsError || !connections.length) {
-      console.error('Error fetching connections:', connectionsError);
+      logger.error('Error fetching connections:', connectionsError);
       return [];
     }
 
@@ -120,7 +121,7 @@ export const supabaseAdminService = {
       .in('connection_id', connectionIds);
 
     if (error) {
-      console.error('Error fetching chats:', error);
+      logger.error('Error fetching chats:', error);
       return [];
     }
 
@@ -131,7 +132,7 @@ export const supabaseAdminService = {
     const { data, error } = await supabaseAdmin.from('chat_threads').insert([chat]).select();
 
     if (error) {
-      console.error('Error creating chat:', error);
+      logger.error('Error creating chat:', error);
       throw error;
     }
 
@@ -147,7 +148,7 @@ export const supabaseAdminService = {
       .order('timestamp', { ascending: true });
 
     if (error) {
-      console.error('Error fetching messages:', error);
+      logger.error('Error fetching messages:', error);
       return [];
     }
 
@@ -158,7 +159,7 @@ export const supabaseAdminService = {
     const { data, error } = await supabaseAdmin.from('chat_messages').insert([message]).select();
 
     if (error) {
-      console.error('Error adding message:', error);
+      logger.error('Error adding message:', error);
       throw error;
     }
 

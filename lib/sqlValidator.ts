@@ -5,6 +5,8 @@
  * before execution. It enforces rules to prevent destructive operations.
  */
 
+import { logger } from '@/lib/logger';
+
 /**
  * Validates SQL to ensure it's read-only and safe
  */
@@ -166,7 +168,7 @@ export function runValidatorTests(): boolean {
   let passed = 0;
   let failed = 0;
 
-  console.log('Running SQL validator tests:');
+  logger.info('Running SQL validator tests:');
 
   for (const [sql, expectedValid, expectedError] of testCases) {
     const result = validateSQL(sql);
@@ -180,15 +182,15 @@ export function runValidatorTests(): boolean {
 
     if (testPassed) {
       passed++;
-      console.log(`✅ Test passed: "${sql.slice(0, 40)}${sql.length > 40 ? '...' : ''}"`);
+      logger.info(`✅ Test passed: "${sql.slice(0, 40)}${sql.length > 40 ? '...' : ''}"`);
     } else {
       failed++;
-      console.log(`❌ Test failed: "${sql.slice(0, 40)}${sql.length > 40 ? '...' : ''}"`);
-      console.log(`   Expected valid: ${expectedValid}, Actual: ${result.valid}`);
-      console.log(`   Reason: ${result.reason}`);
+      logger.info(`❌ Test failed: "${sql.slice(0, 40)}${sql.length > 40 ? '...' : ''}"`);
+      logger.info(`   Expected valid: ${expectedValid}, Actual: ${result.valid}`);
+      logger.info(`   Reason: ${result.reason}`);
     }
   }
 
-  console.log(`\nTest summary: ${passed} passed, ${failed} failed`);
+  logger.info(`\nTest summary: ${passed} passed, ${failed} failed`);
   return failed === 0;
 }

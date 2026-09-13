@@ -6,6 +6,8 @@
  * required variable is missing.
  */
 
+import { logger } from './logger';
+
 const requiredVars = [
   'SUPABASE_DATABASE_URL',
   'SUPABASE_SERVICE_ROLE_KEY',
@@ -27,7 +29,7 @@ if (typeof window === 'undefined') {
 
   // Check AES key length specifically after ensuring it exists
   if (process.env.AES_ENCRYPTION_KEY && process.env.AES_ENCRYPTION_KEY.length < 16) {
-    console.warn(
+    logger.warn(
       '[config] Warning: AES_ENCRYPTION_KEY is less than 16 characters. For production, use a strong, unique secret of 32 bytes (or derived to it).'
     );
   }

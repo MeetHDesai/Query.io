@@ -1,11 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
+import { logger } from './logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 
 // Verify if Supabase credentials are provided
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase URL and anon key must be provided in environment variables');
+  logger.error('Supabase URL and anon key must be provided in environment variables');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -44,7 +45,7 @@ export const supabaseService = {
     const { data, error } = await supabase.from('connections').select('*').eq('user_id', userId);
 
     if (error) {
-      console.error('Error fetching connections:', error);
+      logger.error('Error fetching connections:', error);
       return [];
     }
 
@@ -59,7 +60,7 @@ export const supabaseService = {
       .single();
 
     if (error) {
-      console.error('Error fetching connection:', error);
+      logger.error('Error fetching connection:', error);
       return null;
     }
 
@@ -70,8 +71,8 @@ export const supabaseService = {
     const { data, error } = await supabase.from('connections').insert([connection]).select();
 
     if (error) {
-      console.error('Error creating connection:', error);
-      console.log(error);
+      logger.error('Error creating connection:', error);
+      logger.info(error);
       throw error;
     }
 
@@ -87,7 +88,7 @@ export const supabaseService = {
       .eq('user_id', userId);
 
     if (connectionsError || !connections.length) {
-      console.error('Error fetching connections:', connectionsError);
+      logger.error('Error fetching connections:', connectionsError);
       return [];
     }
 
@@ -101,7 +102,7 @@ export const supabaseService = {
       .in('connection_id', connectionIds);
 
     if (error) {
-      console.error('Error fetching chats:', error);
+      logger.error('Error fetching chats:', error);
       return [];
     }
 
@@ -112,7 +113,7 @@ export const supabaseService = {
     const { data, error } = await supabase.from('chat_threads').insert([chat]).select();
 
     if (error) {
-      console.error('Error creating chat:', error);
+      logger.error('Error creating chat:', error);
       throw error;
     }
 
@@ -128,7 +129,7 @@ export const supabaseService = {
       .order('timestamp', { ascending: true });
 
     if (error) {
-      console.error('Error fetching messages:', error);
+      logger.error('Error fetching messages:', error);
       return [];
     }
 
@@ -139,7 +140,7 @@ export const supabaseService = {
     const { data, error } = await supabase.from('chat_messages').insert([message]).select();
 
     if (error) {
-      console.error('Error adding message:', error);
+      logger.error('Error adding message:', error);
       throw error;
     }
 

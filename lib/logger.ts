@@ -14,8 +14,6 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 
 // Type definitions for our logger interface
-type LogLevel = 'error' | 'warn' | 'info' | 'debug' | 'verbose' | 'silly';
-
 interface LoggerInterface {
   error: (...args: any[]) => void;
   warn: (...args: any[]) => void;

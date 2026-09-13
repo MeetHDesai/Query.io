@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useState } from 'react';
 import { useAuth } from '@/app/contexts/AuthContext';
 import { AlertCircle } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -58,7 +59,7 @@ export default function RegisterPage() {
         errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error('Google signup error:', error);
+      logger.error('Google signup error:', error);
     }
   };
 
@@ -75,7 +76,7 @@ export default function RegisterPage() {
         errorMessage = 'Network error. Please check your connection and try again.';
       }
       setError(errorMessage);
-      console.error('GitHub signup error:', error);
+      logger.error('GitHub signup error:', error);
     }
   };
 
