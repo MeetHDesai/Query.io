@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Query.io
 
-## Getting Started
+A full-stack app that lets you ask questions about your database in plain English. Connect a Postgres database, type a question, and Query.io uses an LLM to generate a safe, read-only SQL query, runs it, and streams the results back with an auto-generated chart or table.
 
-First, run the development server:
+## How it works
 
-```bash
+1. **Connect a database** — credentials are encrypted (AES-256) before being stored, never in plaintext.
+2. **Ask a question** — e.g. "what were our top 5 products by revenue last quarter?"
+3. **The LLM generates SQL** — the query is generated via the OpenAI API based on your database's introspected schema.
+4. **The query is validated** — before anything runs, a validation layer enforces SELECT-only execution and blocks common injection vectors (stacked queries, SQL comments, destructive keywords).
+5. **Results stream back** — as a table, chart, or both.
+
+## Tech stack
+
+- **Frontend:** Next.js (App Router), React, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend:** Next.js API routes, Prisma ORM
+- **Database:** PostgreSQL (via Supabase)
+- **Auth:** Firebase Authentication
+- **AI:** OpenAI API for natural language → SQL generation
+- **Testing:** Jest, with CI (GitHub Actions) running lint + tests on every push
+
+## Security
+
+- SQL validation layer: SELECT-only, blocks multi-statement injection, dangerous keywords, and SQL comment syntax — covered by an automated test suite (see `__tests__/sqlValidator.test.ts`)
+- Encrypted storage for user-supplied database credentials
+- Per-user rate limiting on query generation and execution endpoints
+
+## Documentation
+
+More detail on specific parts of the system:
+- [`API.md`](./API.md) — API route reference
+- [`AUTH.md`](./AUTH.md) — authentication flow
+- [`DB-SCHEMA.md`](./DB-SCHEMA.md) — database schema
+- [`DESIGN-SPEC.md`](./DESIGN-SPEC.md) — product/design spec
+
+## Getting started
+
+See [`ENV-SETUP.md`](./ENV-SETUP.md) for environment variable setup, then:
+
+\`\`\`bash
+npm install --legacy-peer-deps
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run tests with `npm test`, lint with `npm run lint`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Status
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Personal project, built solo. Not currently deployed.
